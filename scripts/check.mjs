@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+/**
+ * finesse-term 仓库自检。
+ *
+ * 两部分：
+ *   1. 数据完整性 —— 交给 term.mjs check
+ *   2. 检索回归   —— 一组「用户会怎么说」的真实句子，断言能不能查到该查到的词条，
+ *                    以及不该命中的句子确实不命中。改打分算法时这一组是防线。
+ */
+
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const TERM = join(ROOT, "skills", "finesse-term", "scripts", "term.mjs");
+
+function run(args) {
+  const stdout = execFileSync(process.execPath, [TERM, ...args], { encoding: "utf8" });
+  return JSON.parse(stdout);
+}
+
+/** [用户原话, 必须出现在前 N 个候选里的词条 id] —— null 表示这句话不该命中任何术语 */
+const CASES = [
+  ["底部按钮被那条黑杠挡住了", "safe-area"],
+  ["鼠标放上去变个色", "hover-state"],
+  ["点下去也要有一下反馈", "active-state"],
+  ["这个页面看着有点土", "easing"],
+  ["弹窗底下的页面还能滑", "scroll-lock"],
+  ["键盘弹出来把输入框挡住了", "keyboard-push"],
+  ["列表一条数据都没有的时候", "empty-state"],
+  ["图片加载完页面往下跳", "cls"],
+  ["鼠标放到下载按钮上加个小提示", "tooltip"],
+  ["打一个字就请求一次太频繁了", "debounce-throttle"],
+  ["这个太挤了不透气", "whitespace"],
+  ["在微信里打开显示不对", "webview"],
+  ["电脑上打开这个 H5 很怪", "desktop-frame"],
+  ["列表太长了滚起来卡", "virtual-list"],
+  ["字太浅了看不清", "contrast-ratio"],
+  ["从下面弹出来半个屏幕", "bottom-sheet"],
+  ["按下去没有分量", "press-rebound"],
+  ["开关切换太生硬", "elastic-toggle"],
+  ["点哪波从哪散", "tap-ripple"],
+  ["点赞要有爆炸感", "like-burst"],
+  ["打勾要画出来", "checkmark-draw"],
+  ["拖动滑块要联动显示", "synced-slider"],
+  ["数据要跳着涨", "number-roll"],
+  ["骨架屏切真实内容会抖", "skeleton-handoff"],
+  ["点了翻到背面", "card-flip-3d"],
+  ["汉堡菜单变叉", "icon-morph"],
+  ["堆叠卡片抽走一张", "card-stack-swipe"],
+  ["弹出来太快看不清", "sheet-hold"],
+  ["帮我把这个接口的返回值改成数组", null],
+  ["把这段代码抽成一个函数", null],
+];
+
+const failures = [];
+
+const data = run(["check"]);
+if (!data.ok) failures.push(...data.problems.map((p) => `数据：${p}`));
+
+for (const [sentence, expected] of CASES) {
+  const result = run(["find", "--q", sentence, "--limit", "3", "--brief"]);
+  const ids = result.candidates.map((c) => c.id);
+  if (expected === null) {
+    if (ids.length) failures.push(`检索：「${sentence}」不该命中，却返回了 ${ids.join(", ")}`);
+  } else if (!ids.includes(expected)) {
+    failures.push(`检索：「${sentence}」应查到 ${expected}，实际 ${ids.join(", ") || "无命中"}`);
+  }
+}
+
+if (failures.length) {
+  process.stdout.write(`✗ ${failures.length} 项未通过\n\n${failures.map((f) => `  · ${f}`).join("\n")}\n`);
+  process.exitCode = 1;
+} else {
+  process.stdout.write(`✓ ${data.total} 条词条，${CASES.length} 条检索用例全部通过\n`);
+}

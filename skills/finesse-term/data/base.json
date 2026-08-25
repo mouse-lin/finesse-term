@@ -1,0 +1,245 @@
+{
+  "$schema": "../references/entry-format.md",
+  "surface": "both",
+  "note": "前端基础概念：盒模型 · 弹性布局 · 定位 · 事件流 · 跨域 · 缓存 · 首屏 · 存储。用户描述这些问题时几乎不会用正名，只会说「怎么都不居中」「刷新一下就没了」。",
+  "terms": [
+    {
+      "id": "box-model",
+      "title": "盒模型",
+      "en": "Box Model",
+      "aliases": [
+        "content-box",
+        "border-box",
+        "padding",
+        "margin"
+      ],
+      "layer": "layout",
+      "plain": "每个元素占的空间由内到外分四层：内容、内边距 padding、边框 border、外边距 margin，宽高到底算不算 padding 和 border 看盒模型类型。",
+      "say": "全局设置 box-sizing: border-box，这样写的 width 就是看得见的实际宽度，padding 和 border 都往里吃，不用再手动加减。",
+      "trap": "用默认的 content-box 却按最终视觉宽度写 width —— 一加 padding 元素实际宽度比预期宽出一截，撑破父容器还得反复调值。",
+      "pairs": [
+        "flexbox",
+        "aspect-ratio"
+      ],
+      "trigger": [
+        "宽度对不上",
+        "加了内边距就撑破了",
+        "设了 100% 还是超出去",
+        "border-box 是什么"
+      ]
+    },
+    {
+      "id": "flexbox",
+      "title": "Flex 布局",
+      "en": "Flexbox",
+      "aliases": [
+        "display:flex",
+        "justify-content",
+        "align-items"
+      ],
+      "layer": "layout",
+      "plain": "把一组元素放进一条弹性容器里，用主轴对齐（justify-content）和交叉轴对齐（align-items）来控制它们怎么排、怎么分布，不用再靠 float 硬凑。",
+      "say": "父容器 display: flex，横向排列用 justify-content 控制间距分布，竖直居中用 align-items: center，需要换行加 flex-wrap: wrap。",
+      "trap": "还在用 float + 清除浮动拼横向布局 —— 一改内容数量整行就错位，垂直居中还要靠魔法数字凑。这类需求现在基本都该用 flex 一步到位。",
+      "pairs": [
+        "box-model",
+        "grid-layout"
+      ],
+      "trigger": [
+        "横向排列不齐",
+        "垂直居中怎么弄",
+        "float 布局乱了",
+        "flex 居中"
+      ]
+    },
+    {
+      "id": "position-types",
+      "title": "定位方式",
+      "en": "CSS Position",
+      "aliases": [
+        "relative",
+        "absolute",
+        "fixed",
+        "position"
+      ],
+      "layer": "layout",
+      "plain": "position 决定元素怎么脱离正常排版：relative 相对自己原位置微调，absolute 相对最近的定位祖先自由摆放，fixed 相对屏幕摆放不随滚动走。",
+      "say": "要让子元素能用 absolute 精确摆放，先给父容器加 position: relative 建立定位参照系；悬浮在屏幕固定位置的元素才用 fixed。",
+      "trap": "父容器没设置 relative 就给子元素 absolute —— 子元素直接相对页面根部定位，跑到完全意料之外的位置。absolute 一定要先想清楚它相对谁定位。",
+      "pairs": [
+        "z-index-layer",
+        "sticky"
+      ],
+      "trigger": [
+        "absolute 定位跑偏了",
+        "元素飞到别的地方去了",
+        "relative 和 absolute 区别"
+      ]
+    },
+    {
+      "id": "event-bubbling",
+      "title": "事件冒泡",
+      "en": "Event Bubbling",
+      "aliases": [
+        "stopPropagation",
+        "事件委托",
+        "捕获与冒泡"
+      ],
+      "layer": "interaction",
+      "plain": "点一个元素，这个点击事件不会只停在它身上，会一层层往外层父元素传，直到最外层，这个过程就是冒泡。",
+      "say": "只想让当前元素响应点击、不想影响外层时调用 event.stopPropagation()；反过来想省事，也可以把事件绑在父元素上用事件委托统一处理子元素点击。",
+      "trap": "在弹层内部按钮上没有 stopPropagation —— 点击冒泡到外层遮罩的关闭逻辑，结果点弹层里任何按钮都顺带把弹层关掉了。",
+      "pairs": [
+        "click-penetration",
+        "modal"
+      ],
+      "trigger": [
+        "点了子元素外层也触发了",
+        "点哪都关闭弹窗",
+        "点一下触发了两次",
+        "stopPropagation"
+      ]
+    },
+    {
+      "id": "cors",
+      "title": "跨域",
+      "en": "CORS",
+      "aliases": [
+        "Access-Control-Allow-Origin",
+        "同源策略",
+        "预检请求"
+      ],
+      "layer": "platform",
+      "plain": "浏览器出于安全考虑，默认不让一个网站的页面随便读取另一个域名接口返回的数据，除非那个接口明确用响应头表示允许。",
+      "say": "接口所在的服务端在响应头里加 Access-Control-Allow-Origin 允许具体的前端域名；开发阶段本地联调可以配置代理转发绕开跨域限制。",
+      "trap": "以为前端能自己解决跨域 —— 跨域限制是浏览器对响应的拦截，前端代码怎么改都没用，必须服务端加响应头或者走代理才行。",
+      "pairs": [
+        "http-cache",
+        "mp-cloud"
+      ],
+      "trigger": [
+        "接口报跨域错误",
+        "CORS 报错",
+        "No Access-Control-Allow-Origin"
+      ]
+    },
+    {
+      "id": "http-cache",
+      "title": "强缓存与协商缓存",
+      "en": "HTTP Cache",
+      "aliases": [
+        "Cache-Control",
+        "ETag",
+        "304",
+        "强缓存"
+      ],
+      "layer": "perf",
+      "plain": "强缓存命中时浏览器直接用本地文件，连请求都不发；协商缓存会发个请求问服务器「变了吗」，没变就回 304，还是不用重新下载。",
+      "say": "不常变的静态资源（图片、带 hash 的 JS/CSS）用 Cache-Control 设长期强缓存；会更新但不想每次都全量下载的资源用 ETag 走协商缓存。",
+      "trap": "所有资源不分青红皂白设成永久强缓存 —— 文件内容更新了用户本地还在用旧的强缓存，页面出问题都不知道是缓存导致的。文件名/hash 变了才该强缓存更新。",
+      "pairs": [
+        "cors",
+        "first-screen"
+      ],
+      "trigger": [
+        "更新了但用户看到的还是旧版本",
+        "接口每次都重新请求",
+        "怎么用缓存"
+      ]
+    },
+    {
+      "id": "first-screen",
+      "title": "首屏时间 / 白屏",
+      "en": "First Screen / White Screen",
+      "aliases": [
+        "FCP",
+        "白屏时间",
+        "首屏加载"
+      ],
+      "layer": "perf",
+      "plain": "打开页面到用户第一次看到有意义的内容之间那段空白等待，等太久就是常说的「白屏」。",
+      "say": "把首屏必需的资源和逻辑放在关键路径上优先执行，非首屏内容用懒加载延后；能的话先渲染骨架屏或首屏关键内容，别等所有数据齐了才画一笔。",
+      "trap": "所有接口全部并行请求完才开始渲染任何东西 —— 用户对着白屏等到最后一个慢接口才看到页面。应该让首屏渲染不依赖最慢的那个非核心接口。",
+      "pairs": [
+        "skeleton",
+        "http-cache"
+      ],
+      "trigger": [
+        "打开是一片白",
+        "首屏加载慢",
+        "白屏时间太长"
+      ]
+    },
+    {
+      "id": "jsbridge",
+      "title": "H5 与 Native 通信",
+      "en": "JSBridge",
+      "aliases": [
+        "JSBridge",
+        "H5 调 App",
+        "原生桥接"
+      ],
+      "layer": "platform",
+      "plain": "H5 页面跑在 App 内嵌的容器里，想调用拍照、支付、扫码这些手机原生能力，得通过一座「桥」把 JS 调用转成原生代码去执行，再把结果传回来。",
+      "say": "调用原生能力前先判断桥是否已经注入（容器环境）,再走约定好的 JSBridge 方法名传参调用，原生执行完通过回调把结果传回 H5，别假设桥一定存在。",
+      "trap": "直接调用原生方法不做环境判断 —— 在普通浏览器里打开这个 H5（没有原生容器）时方法不存在，页面直接报错白屏。要先判断是否在对应 App 容器里。",
+      "pairs": [
+        "webview",
+        "mp-cloud"
+      ],
+      "trigger": [
+        "H5 怎么调用拍照",
+        "网页里唤起 App 功能",
+        "JSBridge"
+      ]
+    },
+    {
+      "id": "semantic-html",
+      "title": "语义化标签",
+      "en": "Semantic HTML",
+      "aliases": [
+        "header",
+        "nav",
+        "main",
+        "article",
+        "div 滥用"
+      ],
+      "layer": "a11y",
+      "plain": "用 header、nav、main、article、footer 这些表明「这块是什么」的标签，而不是所有东西都用没有语义的 div 堆出来。",
+      "say": "页面骨架用 header/nav/main/footer 划分区域，列表用 ul/li，按钮就用 button 不要用 div 模拟——读屏软件和搜索引擎都靠这些标签理解页面结构。",
+      "trap": "整页从头到尾全是 div 加 class —— 读屏软件念不出这是导航还是正文，SEO 也抓不到页面结构重点。可点击的东西还必须是 button/a，div 模拟按钮键盘用不了。",
+      "pairs": [
+        "a11y-label",
+        "tab-order"
+      ],
+      "trigger": [
+        "读屏软件读不出结构",
+        "SEO 抓取不到重点",
+        "div 太多了怎么办"
+      ]
+    },
+    {
+      "id": "storage",
+      "title": "本地存储",
+      "en": "Cookie / LocalStorage",
+      "aliases": [
+        "localStorage",
+        "sessionStorage",
+        "Cookie"
+      ],
+      "layer": "state",
+      "plain": "在用户浏览器本地留一点数据的几种方式：Cookie 每次请求都会自动带上、体积小；localStorage 只留在本地不随请求发送、能存更多、关了浏览器也在。",
+      "say": "跟登录态、需要服务端识别的信息用 Cookie；纯前端记住的偏好设置、草稿内容用 localStorage，临时的、关标签页就该丢的用 sessionStorage。",
+      "trap": "把大量业务数据存进 Cookie —— Cookie 会跟着每个请求自动带上，塞多了每次请求体积都变大，还拖慢速度。这类数据应该放 localStorage。",
+      "pairs": [
+        "offline-state",
+        "http-cache"
+      ],
+      "trigger": [
+        "记住用户的设置",
+        "刷新页面数据没了",
+        "localStorage 和 Cookie 区别"
+      ]
+    }
+  ]
+}

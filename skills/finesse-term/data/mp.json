@@ -1,0 +1,239 @@
+{
+  "$schema": "../references/entry-format.md",
+  "surface": "h5",
+  "note": "小程序专属术语：包体积 · 页面栈 · 生命周期 · 自定义组件 · 登录与消息 · 云开发。宿主不是浏览器，很多 Web 上的常识在这里不成立。",
+  "terms": [
+    {
+      "id": "mp-subpackage",
+      "title": "分包加载",
+      "en": "Subpackage Loading",
+      "aliases": [
+        "分包",
+        "主包",
+        "subpackages"
+      ],
+      "layer": "perf",
+      "plain": "把小程序拆成一个主包加多个分包，用户先下载小包的主包能进首页，进到哪个模块才下载对应分包。",
+      "say": "按业务模块拆分包，首页相关放主包，主包体积控制在 2MB 以内，其余功能页放进独立分包按需加载。",
+      "trap": "把所有页面都塞进主包 —— 小程序主包超过 2MB 直接审核不通过，用户等首页都要等半天。分包之间也别互相强依赖，不然还是等于没分。",
+      "pairs": [
+        "mp-page-stack",
+        "first-screen"
+      ],
+      "trigger": [
+        "小程序太大了",
+        "首页打开慢",
+        "包体积超限",
+        "分包"
+      ]
+    },
+    {
+      "id": "mp-page-stack",
+      "title": "页面栈",
+      "en": "Page Stack",
+      "aliases": [
+        "navigateTo",
+        "redirectTo",
+        "页面层级"
+      ],
+      "layer": "layout",
+      "plain": "小程序里 navigateTo 跳转的页面会一层层叠在栈里，最多叠 10 层，超过就要用 redirectTo 或 reLaunch 把栈换掉。",
+      "say": "常规跳转用 navigateTo 保留返回路径；到了第 10 层左右改用 redirectTo 替换当前页，或者 reLaunch 清空栈重新开始。",
+      "trap": "一路 navigateTo 跳到底 —— 到第 11 层直接报错跳转失败，而且用户要点十次返回才能回首页。深层流程要在中间节点做 reLaunch。",
+      "pairs": [
+        "mp-subpackage",
+        "page-transition"
+      ],
+      "trigger": [
+        "跳转失败",
+        "页面栈溢出",
+        "返回要点好多次",
+        "navigateTo 报错"
+      ]
+    },
+    {
+      "id": "mp-lifecycle",
+      "title": "小程序生命周期",
+      "en": "Mini Program Lifecycle",
+      "aliases": [
+        "onLoad",
+        "onShow",
+        "onHide",
+        "onUnload"
+      ],
+      "layer": "state",
+      "plain": "小程序和页面各自有一套生命周期钩子：App 级的 onLaunch/onShow/onHide，页面级的 onLoad/onShow/onHide/onUnload。",
+      "say": "请求数据放 onLoad 只拿一次，页面每次切回来要刷新的逻辑放 onShow，离开时清定时器放 onHide 或 onUnload。",
+      "trap": "把接口请求写进 onShow —— 用户每次从别的 tab 切回来都重新拉一遍数据，列表滚动位置也丢了。首次加载该用 onLoad，onShow 只做轻量刷新。",
+      "pairs": [
+        "mp-page-stack",
+        "mp-custom-component"
+      ],
+      "trigger": [
+        "切回来又请求了一次",
+        "页面数据没刷新",
+        "定时器没清掉",
+        "onLoad 和 onShow 区别"
+      ]
+    },
+    {
+      "id": "mp-custom-component",
+      "title": "自定义组件",
+      "en": "Custom Component",
+      "aliases": [
+        "Component()",
+        "wxml",
+        "wxss"
+      ],
+      "layer": "component",
+      "plain": "用 wxml + wxss + js 三件套封装成一个可复用的小组件，跟页面一样但可以在多个页面里反复插入。",
+      "say": "把重复出现的卡片、列表项抽成 Component，通过 properties 传数据、triggerEvent 往外抛事件，不要在每个页面里复制粘贴同一段模板。",
+      "trap": "每个页面都各写一份几乎一样的卡片 wxml —— 改一处样式要改十个文件。抽成组件后样式默认是隔离的，跨组件传值别指望共享全局 CSS 类名。",
+      "pairs": [
+        "mp-lifecycle",
+        "form-validation"
+      ],
+      "trigger": [
+        "每个页面复制一样的代码",
+        "改样式要改好几个地方",
+        "怎么封装组件"
+      ]
+    },
+    {
+      "id": "mp-capsule",
+      "title": "胶囊按钮 / 自定义导航栏",
+      "en": "Capsule Button / Custom Nav Bar",
+      "aliases": [
+        "胶囊",
+        "navigationStyle:custom"
+      ],
+      "layer": "layout",
+      "plain": "屏幕右上角系统自带的返回/关闭圆角按钮组，用了自定义导航栏（navigationStyle: custom）以后标题内容要自己避开它的位置。",
+      "say": "自定义导航栏时用 wx.getMenuButtonBoundingClientRect() 读胶囊按钮的实际坐标，标题栏内容右边留出这块宽度，别写死一个经验值。",
+      "trap": "写死 right: 90px 留白 —— 不同机型胶囊按钮位置和大小不一样，安卓和 iOS 差得更多，写死的值在别的手机上要么挡住要么留白过多。",
+      "pairs": [
+        "status-bar",
+        "safe-area"
+      ],
+      "trigger": [
+        "标题被右上角按钮挡住",
+        "自定义导航栏怎么对齐",
+        "胶囊按钮"
+      ]
+    },
+    {
+      "id": "mp-share",
+      "title": "转发分享",
+      "en": "Share / Forward",
+      "aliases": [
+        "onShareAppMessage",
+        "分享朋友圈",
+        "转发卡片"
+      ],
+      "layer": "interaction",
+      "plain": "用户点右上角「…」转发给好友或分享到朋友圈时，小程序自己决定分享出去的标题、图片和跳转路径。",
+      "say": "在页面里实现 onShareAppMessage（好友）和 onShareTimeline（朋友圈），按当前页面的具体内容动态拼标题和 path，别用一个写死的通用文案。",
+      "trap": "不写 onShareAppMessage —— 用的是默认标题和小程序封面图，用户转发出去的卡片跟内容毫无关系，点开率很差。详情页至少要把商品名和图放进分享卡片。",
+      "pairs": [
+        "share-preview",
+        "mp-code"
+      ],
+      "trigger": [
+        "转发出去的卡片不对",
+        "分享标题是默认的",
+        "怎么自定义转发内容"
+      ]
+    },
+    {
+      "id": "mp-login",
+      "title": "授权登录",
+      "en": "WeChat Login / Authorization",
+      "aliases": [
+        "wx.login",
+        "openid",
+        "静默登录"
+      ],
+      "layer": "interaction",
+      "plain": "小程序拿不到微信账号密码，只能靠 wx.login 换一个临时 code，后端拿这个 code 换 openid 来识别是哪个用户，跟用户主动授权头像昵称是两回事。",
+      "say": "先用 wx.login 静默换 code 完成后端登录识别用户身份；只有真的需要头像昵称时，再单独引导用户点头像/昵称填写组件授权，不要合并成一次强制弹窗。",
+      "trap": "一进小程序就弹「获取头像昵称」授权框 —— 大部分场景根本不需要，用户看到就划走小程序了。识别身份和取用户资料是两个独立步骤，别捆一起强求。",
+      "pairs": [
+        "mp-share",
+        "mp-subscribe-msg"
+      ],
+      "trigger": [
+        "一进来就要求授权",
+        "登录卡住了",
+        "openid 和 unionid 区别"
+      ]
+    },
+    {
+      "id": "mp-code",
+      "title": "小程序码",
+      "en": "Mini Program Code",
+      "aliases": [
+        "小程序二维码",
+        "太阳码",
+        "scene 参数"
+      ],
+      "layer": "component",
+      "plain": "长得像二维码但中间带个小程序 logo 的方形码，扫一下直接打开指定小程序的指定页面，比发链接更适合线下场景。",
+      "say": "用 scene 参数（限 32 个字符）带上要跳转的具体信息，页面 onLoad 里解析 scene 决定打开哪个商品或哪张券，别把完整参数都塞进码里。",
+      "trap": "以为 scene 能塞任意长的 JSON —— 限制只有 32 个字符，超了直接生成失败。真正的业务数据应该用 scene 存一个短 id，再拿这个 id 去后端查详情。",
+      "pairs": [
+        "mp-share",
+        "mp-page-stack"
+      ],
+      "trigger": [
+        "生成小程序码",
+        "扫码进指定页面",
+        "scene 参数太长"
+      ]
+    },
+    {
+      "id": "mp-subscribe-msg",
+      "title": "订阅消息",
+      "en": "Subscribe Message",
+      "aliases": [
+        "模板消息",
+        "一次性订阅"
+      ],
+      "layer": "interaction",
+      "plain": "小程序不能像 App 一样随便推送通知，只能在用户主动点击了「提醒我」之类的按钮、弹窗同意订阅之后，才能给他发一条对应的服务通知。",
+      "say": "在用户明确触发的操作（下单、预约）那一刻调用 wx.requestSubscribeMessage 弹窗申请，拿到授权后才能给这次事件发一条对应模板的消息。",
+      "trap": "指望订阅一次就能一直推送 —— 一次性订阅用一次就失效，想再发要用户再同意一次。也别把订阅弹窗做成进页面就自动弹，会被当成骚扰直接拒绝。",
+      "pairs": [
+        "mp-login",
+        "offline-state"
+      ],
+      "trigger": [
+        "消息发不出去",
+        "怎么提醒用户",
+        "小程序能推送吗"
+      ]
+    },
+    {
+      "id": "mp-cloud",
+      "title": "云开发",
+      "en": "CloudBase / Serverless",
+      "aliases": [
+        "云函数",
+        "云数据库",
+        "云存储"
+      ],
+      "layer": "platform",
+      "plain": "小程序官方提供的免服务器方案：云函数当后端接口、云数据库存数据、云存储放文件，不用自己搭服务器和数据库。",
+      "say": "小体量、快速上线的场景可以直接用云开发：写云函数替代接口，前端用 wx.cloud.callFunction 调用；数据量大或要跨平台复用后端时，再考虑自建服务。",
+      "trap": "把云开发当成能无限扩展的正式后端 —— 云函数有执行时长和并发限制，云数据库的复杂查询能力也弱于自建数据库。业务做大了通常要迁到自建服务。",
+      "pairs": [
+        "mp-login",
+        "cors"
+      ],
+      "trigger": [
+        "不想自己搭后端",
+        "云函数",
+        "小程序怎么存数据"
+      ]
+    }
+  ]
+}
