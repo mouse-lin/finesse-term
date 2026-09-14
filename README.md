@@ -2,29 +2,41 @@
 
 <div align="center">
 
-# finesse-term —— 说法层
+# finesse-term
 
-**它不决定做什么，也不决定做得好不好看。它只决定这件事该怎么说。**
+面向开发对话的界面与交互术语对齐工具。将口语化、症状式的界面描述，转化为可以直接发给 Agent 的准确技术需求。
 
 [![version](https://img.shields.io/badge/version-0.1.0-111?style=flat-square)](.claude-plugin/plugin.json)
 [![license](https://img.shields.io/badge/license-MIT-111?style=flat-square)](LICENSE)
 [![terms](https://img.shields.io/badge/术语词条-128_条-c9863f?style=flat-square)](skills/finesse-term/data)
 [![cases](https://img.shields.io/badge/检索用例-30_条-5ee9c8?style=flat-square)](scripts/check.mjs)
 
-[快速开始](#快速开始) · [它长这样](#它长这样) · [三条硬门禁](#三条硬门禁) · [术语库](#术语库) · [可以这样问](#可以这样问) · [安装](#安装--工具支持) · [开发](#开发)
+[快速开始](#快速开始) · [实际效果](#实际效果) · [核心原则](#核心设计原则) · [术语库](#术语库) · [交互文档](#交互文档) · [指令说明](#动作命令) · [安装与集成](#安装--工具支持)
 
 </div>
 
 ---
 
-用户说不出「安全区」，不是因为词汇量小，是因为他描述的是**症状**（按钮被下面那条黑杠挡住了），而术语描述的是**成因**。这中间的翻译，是他自己做不到、而每一轮对话都需要的那一步。
+## 为什么需要它
 
-`finesse-term` 做两件事，不打断你手上的活：
+描述界面问题时，我们通常描述的是现象（"底下那个按钮在 iPhone 上被黑条挡住了"），而开发和 Agent 需要的是成因和实现方式（"吸底操作栏的安全区适配"）。
 
-1. 把说不准的界面描述，换成一句**能直接发给 Agent** 的准确需求。
-2. 主动点出你刚刚描述了、却叫不出名字的那个术语 —— 连同它最常见的那个坑。
+finesse-term 在对话中自动完成这层转换：
 
-> 作者：西瓜同学 · MIT · finesse 家族第五个 Skill
+1. **需求转换**：把模糊的界面描述改写成 Agent 能直接执行的技术需求。
+2. **术语提示**：交付代码或方案的同时，指出对应的前端术语和常见实现误区（trap）。
+
+词条按用户的描述方式检索，而不是按术语名称：
+
+| 常见描述 | 对应术语 |
+|:---|:---|
+| 按钮被挡住 · 下面那条黑杠 | 安全区 Safe Area |
+| 点了没反应 · 点下去要有反馈 | 按下态 Active State |
+| 看着有点土 · 很机械 · 像 PPT | 缓动曲线 Easing |
+| 弹窗底下还能滑 · 关掉回到顶部 | 滚动穿透 Scroll Lock |
+| 太挤了 · 不透气 | 留白 Whitespace |
+| 图片加载完页面往下跳 | 布局偏移 CLS |
+| 一条数据都没有的时候 | 空状态 Empty State |
 
 ---
 
@@ -34,233 +46,159 @@
 npx skills add https://github.com/mouse-lin/finesse-term
 ```
 
-装完不用专门调用它，照常干活、照常用大白话描述界面就行：
+安装后无需单独调用，正常用口语描述界面问题即可：
 
-> "底下那个按钮在我 iPhone 上被挡住了一半，帮我修一下"
-> "弹窗底下还能滑，关掉又回到顶部了"
-> "这个卡片看着有点土，说不出哪儿不对"
+- "底下那个按钮在我 iPhone 上被挡住了一半，帮我修一下"
+- "弹窗底下还能滑，关掉又回到顶部了"
+- "这个卡片悬停效果很机械，像 PPT"
 
-它会先把活干完，再在结果里顺手点出术语和那个坑。想主动用，就 `/finesse-term say 你的原话`（其它命令见[动作命令](#动作命令)）。
-
-> [!TIP]
-> 装完想确认它在工作：问一句「底下那条黑杠挡住按钮了，这个专业上叫什么」。答出**安全区（Safe Area）**，并提醒吸底操作栏要一起处理，就对了。
+它会直接完成改动，并在说明中带出相关术语和注意事项。
 
 > [!NOTE]
-> 本地检索器需要 **Node.js 20+**（零依赖、不联网）。Claude Code 自带 Node 环境，一般不用额外装。
+> 环境要求 Node.js 20+。无第三方依赖，本地离线检索，毫秒级返回。
+
+装完可以这样验证：问"底下那条黑杠挡住按钮了，这个专业上叫什么"，回答应为**安全区（Safe Area）**，并提示吸底操作栏需要一起处理。
 
 ---
 
-## 它长这样
+## 实际效果
 
-你说：
+输入：
 
 ```text
 底下那个按钮在我 iPhone 上被挡住了一半
 ```
 
-它一边帮你改，一边告诉你：
+输出：
 
 ```text
-已把底部操作栏的内边距接上安全区（Safe Area）—— 全面屏底部那条 Home 指示条会压掉 fixed 元素的下半截，
-模拟器看不出来，只有真机会暴露。同时给内容区补了等高的底部内边距，否则列表最后一条永远被这条栏盖住。
+已为底部操作栏补充安全区适配（Safe Area）：padding-bottom: env(safe-area-inset-bottom)。
+iOS 全面屏底部的 Home 指示条会遮挡 fixed 元素，模拟器上通常看不出来。
+同时为列表容器补充了等高的底部内边距，避免最后一行内容被吸底栏遮挡。
 ```
 
-两个术语一起给，不是为了凑数：**吸底和安全区不一起做就会出事。**
-
 ---
 
-## 和其它「术语表」的区别
+## 核心设计原则
 
-普通术语表假设你**知道要查什么**。这个库假设你不知道 —— 你只有症状。
+为避免过度输出和无关科普，Skill 遵循三条规则：
 
-所以每条词条的检索主键不是它叫什么，而是 **`trigger`：用户会怎么描述这件事**。
-
-| 你会说 | 它叫 |
-|:---|:---|
-| 按钮被挡住 · 下面那条黑杠 | 安全区 Safe Area |
-| 点了没反应 · 点下去要有反馈 | 按下态 Active State |
-| 看着有点土 · 很机械 · 像 PPT | 缓动曲线 Easing |
-| 弹窗底下还能滑 · 关掉回到顶部 | 滚动穿透 Scroll Lock |
-| 太挤了 · 不透气 | 留白 Whitespace |
-| 图片加载完页面往下跳 | 布局偏移 CLS |
-| 一条数据都没有的时候 | 空状态 Empty State |
-| 电脑上打开这个 H5 很怪 | 桌面手机画框 |
-
-检索是**本地**的，零网络依赖，几毫秒返回。
-
----
-
-## 三条硬门禁
-
-这三条是这个 Skill 存在的意义 —— 违反任何一条，它就从「帮你说准」变成了炫技。
-
-### ① 指得出触发的那几个字
-
-每一条给出的术语，都必须能指着用户这一轮的**原话**说出是哪几个字触发的。指不出来就不提。
-
-**宁可一条都不提。**「不用说」是这个 Skill 最常见的正确输出。
-
-### ② H5 的搭档必须一起给
-
-移动端的坑几乎都是成对的。只说一半等于埋雷：
-
-| 只说了 | 就必须一起说 | 否则 |
-|:---|:---|:---|
-| 吸底操作栏 | 安全区 | 全面屏上按钮被 Home 条压掉一半 |
-| 弹层 | 滚动穿透 | 弹窗底下的页面跟着滑，关掉还弹回顶部 |
-| 输入框 | 键盘顶起 | iOS 上键盘把提交按钮顶出屏幕 |
-| 图片 | 宽高比容器 | 图一加载完，用户正要点的按钮跑了 |
-| 头尾固定 | 滚动容器 | iOS 地址栏一收缩，固定栏开始抖 |
-
-### ③ 结果在前，术语在后
-
-先把用户要的活干完，术语长在结果的行文里。一次最多 1–3 条。不生成学习路线、课程、练习或术语清单。
+1. **原话触发**：只有命中用户原话中的描述（`trigger`）时才给出术语；没有明确匹配时只处理任务，不输出术语。
+2. **关联问题一起提示**：移动端布局的问题往往成对出现，命中其中一个时会同时提示关联项：
+   - 吸底操作栏 → 安全区、内容区底部留白
+   - 弹层 / 模态框 → 滚动穿透（Scroll Lock）、关闭后的滚动位置还原
+   - 输入框 → 软键盘顶起遮挡
+   - 图片 → 宽高比占位（Aspect Ratio），避免布局偏移（CLS）
+3. **任务优先，术语后置**：先给出方案和代码，术语和注意事项放在简要说明中，单次 1–3 个，不输出教学内容。
 
 ---
 
 ## 术语库
 
-128 条，五册：
+共 128 条前端 / 移动端常见概念，分 5 册：
 
-| 册 | 收什么 | 条数 |
+| 文件 | 覆盖范围 | 条数 |
 |:---|:---|:---|
-| `data/web.json` | 通用 Web：布局 · 组件 · 状态 · 交互 · 表单 · 无障碍 · 性能 | 44 |
-| `data/h5.json` | 移动 H5 专属：适配 · 容器 · 手势 · 键盘 · 弹层 · WebView | 30 |
-| `data/motion.json` | 动效与质感：过渡 · 转场 · 反馈 · 材质 · 排版节奏 · 高级交互手法 | 34 |
-| `data/mp.json` | 小程序专属：分包 · 页面栈 · 生命周期 · 自定义组件 · 登录与消息 · 云开发 | 10 |
-| `data/base.json` | 前端基础概念：盒模型 · 弹性布局 · 定位 · 事件流 · 跨域 · 缓存 · 首屏 · 存储 | 10 |
+| `data/web.json` | 通用 Web：布局、组件、界面状态、交互、表单、无障碍、性能 | 44 |
+| `data/h5.json` | 移动端 H5：视口适配、滚动容器、手势、键盘、弹层、WebView | 30 |
+| `data/motion.json` | 动效与质感：缓动曲线、过渡转场、微交互反馈、排版节奏 | 34 |
+| `data/mp.json` | 小程序：分包加载、页面栈、生命周期、自定义组件、登录与消息 | 10 |
+| `data/base.json` | 前端基础：盒模型、Flex 布局、定位、事件冒泡、跨域、缓存、首屏、存储 | 10 |
 
-每条十个字段。其中三个是这个库和普通术语表的差别：
+每条词条有 10 个字段，其中三个最关键：
 
-- **`trigger`** —— 用户会怎么描述这件事。检索的主键。
-- **`say`** —— 可以直接复制给 Agent 的一句标准表达，带具体数值，不绑任何框架。
-- **`trap`** —— 这个术语最常见的翻车方式。**多数时候它比定义更值得说。**
-
-`trap` 只收「知道这个词的人也照样会犯的错」：
-
-> 锁滚动时直接给 body 加 `overflow: hidden` —— iOS 上页面会瞬间弹回顶部，关掉弹窗用户发现自己回到了第一屏。必须先存 scrollTop，关闭时还原。
+- **`trigger`**：用户的常见口语描述，检索主键。
+- **`say`**：标准化的需求表达，带具体参数，不绑定框架。
+- **`trap`**：该概念最常见的实现错误。例如锁滚动时直接给 body 加 `overflow: hidden`，iOS 上页面会跳回顶部，需要先保存 scrollTop，关闭时还原。
 
 ---
 
-## 浏览页：43 条可以上手摸
+## 交互文档
 
-`docs/index.html` 是这个库的静态浏览页——零依赖、离线能开、按你的原话搜（`npm run docs` 生成）。
+仓库内置离线静态浏览页 `docs/index.html`（由 `npm run docs` 生成）：
 
-打开方式：clone 仓库后直接双击 `docs/index.html`，或者在地址后面加 `#词条id` 直接展开某一条：
+- 支持用口语描述直接检索词条。
+- 116 条词条带结构示意图。
+- 43 条带可操作的交互演示（H5 册 30 条 + 动效册 13 条），在手机画框中直接操作，例如滚动穿透、下拉刷新、左滑删除。
+- 演示可切换"错误做法 / 正确做法"，两侧共用同一段 DOM，只差一个属性。
 
-```bash
-open docs/index.html#safe-area        # macOS；Windows 用 start，Linux 用 xdg-open
-```
+部分能力只有真机支持（`env()`、系统键盘、触感反馈），在手机上打开效果最好；桌面端的模拟方式在演示旁有说明。
 
-116 条词条带一组示意图讲结构，其中 **43 条另带一块「真机演示」**：不是截图，是一段真在跑的界面，装在手机画框里。
+本地打开：用浏览器打开 `docs/index.html`（macOS 可执行 `open docs/index.html`），在地址末尾加 `#词条id`（如 `#safe-area`）可直接展开对应词条。
 
-- 滚动穿透真的会穿透，关掉弹层真的弹回第一屏
-- 下拉刷新、左滑删除、长按菜单、底部弹层，都能用手指拖
-- 一个开关切「✗ 错的做法 / ✓ 对的做法」，两侧共用同一段 DOM，差别只在那一个属性上——看到的不是两张图，是那一行代码的后果
-
-覆盖移动 H5 册全部 30 条，加动效册 13 条。手机上打开这一页最划算：`tap-highlight` 那侧的系统高亮、`haptic` 的震动、`prefers-reduced-motion` 的降级，都是真机才认。桌面上取不到的能力（`env()`、系统键盘、马达），画框旁写明了用什么模拟、真机上由谁提供——不拿模拟冒充真的。
-
-演示写在 `scripts/demos.mjs`，加一条的规矩写在那个文件的头部。
-
----
-
-## 可以这样问
-
-| 你想做什么 | 直接说 |
-|:---|:---|
-| 把需求说准确 | `把这句话改成能直接发给 Agent 的需求：我想让卡片鼠标放上去浮起来一点` |
-| 主动获得术语提示 | `听我描述的时候顺手告诉我最该用的 1–3 个术语，别等我问` |
-| 只问名字 | `底下那条黑杠挡住按钮了，这个专业上叫什么` |
-| 看懂别人的话 | `他说这里要做乐观更新和错误回滚，结合我这个点赞功能用大白话讲，我下一步该问他什么` |
-| 审一段需求 | `check：帮我看看这段需求里哪里含糊、哪里漏了成对的东西` |
-| 统一说法 | `align：这个项目里同一个东西有三种叫法，给我一张对齐表` |
+新增演示的规范写在 `scripts/demos.mjs` 文件头部。
 
 ---
 
 ## 动作命令
 
-| 命令 | 干什么 |
+| 指令 | 说明 |
 |:---|:---|
-| `say <原话>` | 改写成可直接发给 Agent 的准确需求（不带命令时的默认动作） |
-| `name <原话>` | 只回答「这叫什么」，附一句解释和那个坑 |
-| `explain <别人的话>` | 拆解听不懂的一段，只讲影响下一步的那个概念 |
-| `check <一段需求>` | 审需求：哪里含糊、哪里漏了成对的搭档 |
-| `align` | 生成 `.finesse/lexicon.md` 说法对齐表 |
-| `list [--surface h5]` | 列出术语库里有什么 |
+| `/finesse-term say <原话>` | 将口语改写为可发给 Agent 的技术需求（默认行为） |
+| `/finesse-term name <原话>` | 只查询对应术语及常见 trap |
+| `/finesse-term explain <文本>` | 解析一段技术描述中影响下一步开发的核心概念 |
+| `/finesse-term check <需求描述>` | 审查需求文本，指出表述模糊或缺少关联处理的地方 |
+| `/finesse-term align` | 为当前项目生成 `.finesse/lexicon.md` 术语对齐表 |
+| `/finesse-term list [--surface h5]` | 列出术语库词条 |
 
----
+不支持斜杠命令的工具（如豆包）里，直接说"say：……""check：……"即可。
 
-## 可选产出：说法对齐表
+### 术语对齐表示例（align）
 
-一个项目里同一个组件常有三种叫法（「弹窗」「浮层」「模态框」），需求文档、代码命名和口头沟通各用一种，久了没人确定说的是不是同一个东西。
+用于统一同一组件在需求文档、口头沟通和代码命名中的不同叫法：
 
-`align` 把每个概念钉死成一个说法，落到 `.finesse/lexicon.md`：
-
-```markdown
-| 本项目统一叫 | 术语 | 代码里的名字 | 别再叫 |
+| 统一命名 | 英文术语 | 组件命名建议 | 避免使用的别名 |
 |:---|:---|:---|:---|
-| 底部弹层 | Bottom Sheet | `<BottomSheet>` | 半屏弹窗 · 上拉框 · 抽屉 |
-| 空状态 | Empty State | `<EmptyState>` | 缺省页 · 无数据页 |
-```
+| 底部弹层 | Bottom Sheet | `<BottomSheet>` | 半屏弹窗 / 上拉框 / 抽屉 |
+| 空状态 | Empty State | `<EmptyState>` | 缺省页 / 无数据页 |
 
-只在你要求、或者同一个东西出现第三种叫法时才写。
-
----
-
-## 在 finesse 家族里的位置
-
-其余几个 Skill 各占流水线上的一段。**这一个是横着的** —— 它不占任何一段，在每一段里都开着：
-
-```
-finesse-brief   做什么       → .workbench/spec.md
-finesse-route   按谁的规则做  → .finesse/brief.md
-finesse-gallery 长什么样     → .finesse/look.md
-finesse-ui      做出来       → 页面
-─────────────────────────────────────────────
-finesse-term    怎么说       ← 上面每一段里都在跑
-```
-
-它对上游最直接的作用是：用户提给 `finesse-brief` 的那句需求，本来是「我想让它好看点」，经过说法层变成一句写得进 spec 的话。对下游的作用是：你看得懂 `finesse-ui` 交付说明里的每一个词，也知道该怎么否决它。
-
-单独用也完全成立 —— 它不读也不写上面任何一个文件。
+只在主动要求，或同一个概念在对话中出现第三种叫法时才生成。
 
 ---
 
-## 范围之外
+## 在 finesse 系列中的定位
 
-- 后端、数据库、部署、构建工具的术语 —— 这个库只管**看得见的那一层**
-- 某个框架/组件库的专有名词（`v-model`、`useState`、`el-table`）—— 换个技术栈就作废
-- 教学：不生成学习路线、课程计划、练习题、术语背诵清单
-- 不对用户已经说准确的话做任何修饰
+- **finesse-brief**：需求与 Spec 生成（做什么）
+- **finesse-route**：架构与规范制定（按什么规则做）
+- **finesse-gallery**：设计风格与视觉参考（长什么样）
+- **finesse-ui**：组件与代码生成（怎么实现）
+- **finesse-term**：语言与需求对齐（怎么表达），可在全流程中独立或协同运行。
+
+---
+
+## 非适用范围
+
+- 后端、数据库、CI/CD 及构建工具相关术语。
+- 特定框架的专有 API（如 `v-model`、`useState`、特定 UI 库组件名）。
+- 教程、学习路线或练习题。
 
 ---
 
 ## 安装 & 工具支持
 
-> [!NOTE]
-> 推荐用 `npx skills`，一条命令通用于所有 agent，运行时会让你选装到哪个 agent。其他装法在下面的折叠区里。
+推荐使用 `npx skills` 安装，运行时可选择装到哪个 agent：
 
 ```bash
 npx skills add https://github.com/mouse-lin/finesse-term
 ```
 
-整个 Skill 就是 `skills/finesse-term/` 这一个目录（`SKILL.md` + `data/` + `references/` + `scripts/`），手动装也只是把它放到 agent 能读到的地方。
+Skill 本体只有 `skills/finesse-term/` 一个目录（`SKILL.md` + `data/` + `references/` + `scripts/`），手动安装即复制这个目录。
 
-| 工具 | 深度 | 装法 |
+| 工具 | 支持方式 | 配置路径 |
 |:---|:---|:---|
-| **Claude Code** | 完整 | `npx skills`，或复制目录到 `~/.claude/skills/` |
-| **Trae / Trae 国内版** | 完整 | 复制目录到项目的 `.trae/skills/` / `.trae-cn/skills/` |
-| **CodeBuddy** | 完整 | 复制目录到项目的 `.codebuddy/skills/` |
-| **豆包 Doubao** | 完整 | 复制目录到豆包用户技能目录（[见下](#豆包doubao)） |
-| **Cursor / OpenAI Codex / GitHub Copilot** | 手动引用 | 目录放进项目，在规则文件里指向 `SKILL.md`（[见下](#cursor--openai-codex--github-copilot)） |
-| **其他（ChatGPT / API）** | 仅规则 | 把 `SKILL.md` 粘进 system prompt；跑不了检索器，只能按规则说话，查不了本地库 |
+| **Claude Code** | 原生支持 | `npx skills` 或复制至 `~/.claude/skills/` |
+| **Trae / Trae 国内版** | 原生支持 | 复制至项目 `.trae/skills/` 或 `.trae-cn/skills/` |
+| **CodeBuddy** | 原生支持 | 复制至项目 `.codebuddy/skills/` |
+| **豆包 Doubao** | 原生支持 | 复制至豆包用户技能目录（[见下](#豆包doubao)） |
+| **Cursor / Copilot / Codex** | 规则引用 | 将目录放入项目，在规则文件中引用 `SKILL.md`（[见下](#cursor--copilot--codex)） |
+| **Web 聊天 / API** | Prompt 导入 | 将 `SKILL.md` 放入 System Prompt（仅规则生效，无本地检索） |
 
 <details>
 <summary><b>各工具的具体命令</b></summary>
 
 <br>
 
-先把仓库拉下来：
+先克隆仓库：
 
 ```bash
 git clone https://github.com/mouse-lin/finesse-term
@@ -270,19 +208,17 @@ cd finesse-term
 ### Claude Code
 
 ```bash
-# 全局可用
+# 全局
 cp -r skills/finesse-term ~/.claude/skills/
-# 或只在某个项目里用
+# 单个项目
 cp -r skills/finesse-term your-project/.claude/skills/
 ```
-
-对话里描述界面时自动触发，也可以 `/finesse-term` 直接调用。
 
 ### Trae
 
 ```bash
 cp -r skills/finesse-term your-project/.trae/skills/
-# 国内版：
+# 国内版
 cp -r skills/finesse-term your-project/.trae-cn/skills/
 ```
 
@@ -294,7 +230,7 @@ cp -r skills/finesse-term your-project/.codebuddy/skills/
 
 ### 豆包（Doubao）
 
-豆包桌面版的技能目录与 Claude Code 同构，但它是**全局安装**，不放进项目：
+豆包桌面版的技能目录结构与 Claude Code 相同，但为全局安装：
 
 ```bash
 # macOS 豆包桌面版
@@ -302,43 +238,42 @@ DOUBAO=~/"Library/Application Support/Doubao/Default/.doubao/agent_mode/workspac
 mkdir -p "$DOUBAO" && cp -r skills/finesse-term "$DOUBAO"/
 ```
 
-装完重启豆包，问一句「你现在能用哪些技能」确认它在列表里。豆包没有斜杠命令，只能自然语言触发；环境里没有 node 时，Skill 会退回直接读 `data/*.json` 查词条。
+安装后重启豆包，询问"你现在能用哪些技能"确认已加载。豆包不支持斜杠命令，通过自然语言触发；环境中没有 Node 时，Skill 会改为直接读取 `data/*.json`。
 
-### Cursor / OpenAI Codex / GitHub Copilot
+### Cursor / Copilot / Codex
 
-这三个不认 Skill 目录，需要把目录放进项目，再用各自的规则文件告诉它去读：
+这三个工具不识别 Skill 目录，需要将目录放入项目，再在规则文件中引用：
 
 ```bash
 cp -r skills/finesse-term your-project/skills/
 ```
 
-然后在 `.cursor/rules/finesse-term.mdc`、`AGENTS.md` 或 `.github/copilot-instructions.md` 里加一句：
+在 `.cursor/rules/finesse-term.mdc`、`.github/copilot-instructions.md` 或 `AGENTS.md` 中加入：
 
 ```text
-用户用大白话描述网页或 H5 的效果、交互、状态或故障时，按 skills/finesse-term/SKILL.md 执行；
-其中的 <skill-root> 就是 skills/finesse-term。
+用户用口语描述网页或 H5 的效果、交互、状态或故障时，按 skills/finesse-term/SKILL.md 执行；
+其中的 <skill-root> 为 skills/finesse-term。
 ```
 
 </details>
 
 ---
 
-## 开发
-
-需要 Node.js 20 或更高版本，零依赖。
+## 本地开发与测试
 
 ```bash
-npm test        # 数据完整性 + 30 条检索回归用例
-```
+# 数据校验 + 检索回归测试
+npm test
 
-直接查库：
-
-```bash
-node skills/finesse-term/scripts/term.mjs find --q "底部按钮被那条黑杠挡住了"
+# 在终端直接检索词条
+node skills/finesse-term/scripts/term.mjs find --q "底部按钮被黑杠挡住"
 node skills/finesse-term/scripts/term.mjs find --q "弹窗底下还能滑" --surface h5
 node skills/finesse-term/scripts/term.mjs get safe-area sticky-footer
 node skills/finesse-term/scripts/term.mjs list --layer motion
 node skills/finesse-term/scripts/term.mjs check
+
+# 重新生成浏览页
+npm run docs
 ```
 
 <details>
@@ -346,39 +281,38 @@ node skills/finesse-term/scripts/term.mjs check
 
 ```text
 skills/finesse-term/
-├── SKILL.md                    # 唯一真源
+├── SKILL.md                    # Skill 定义（唯一真源）
 ├── data/
 │   ├── web.json                # 通用 Web           44 条
-│   ├── h5.json                 # 移动 H5 专属       30 条
+│   ├── h5.json                 # 移动 H5            30 条
 │   ├── motion.json             # 动效与质感         34 条
-│   ├── mp.json                 # 小程序专属         10 条
-│   └── base.json               # 前端基础概念       10 条
+│   ├── mp.json                 # 小程序             10 条
+│   └── base.json               # 前端基础           10 条
 ├── references/
-│   ├── entry-format.md         # 词条契约：十个字段怎么写，怎么加新词
-│   ├── retrieval.md            # 检索策略：拆子句、控噪音、零命中怎么办
-│   └── speaking.md             # 输出形态：三种场景的措辞，和不该说话的时候
+│   ├── entry-format.md         # 词条字段规范与新增流程
+│   ├── retrieval.md            # 检索策略：拆分子句、控制噪音、零命中处理
+│   └── speaking.md             # 输出格式：各场景的措辞模板
 └── scripts/term.mjs            # 本地检索器（find · get · list · check）
 
-scripts/check.mjs               # 仓库自检：数据完整性 + 检索回归
+scripts/check.mjs               # 数据完整性 + 检索回归
 scripts/build-docs.mjs          # 生成 docs/index.html
-scripts/diagrams.mjs            # 示意图库：抽象几何，讲结构
-scripts/demos.mjs               # 真机演示库：真跑的 DOM/CSS/JS，讲后果
+scripts/diagrams.mjs            # 示意图
+scripts/demos.mjs               # 交互演示
 ```
 
 </details>
 
-### 加一条词条
+### 贡献新词条
 
-1. 选册 → 按十个字段写全 → `trigger` 至少四条**口语**
-2. 双向挂 `pairs`
-3. `node skills/finesse-term/scripts/term.mjs check` 必须零问题
-4. 在 `scripts/check.mjs` 的 `CASES` 里加一条检索用例（句子要用口语，不用术语）
-5. `npm test` 全绿
+1. 补全 10 个字段，`trigger` 至少包含 4 条常见口语表达。
+2. 配置双向关联的 `pairs` 词条。
+3. 运行 `node skills/finesse-term/scripts/term.mjs check`，确保没有问题。
+4. 在 `scripts/check.mjs` 的 `CASES` 中添加口语检索用例，确保 `npm test` 通过。
 
-规矩写在 `skills/finesse-term/references/entry-format.md`。
+详细规范见 `skills/finesse-term/references/entry-format.md`。
 
 ---
 
 ## 许可
 
-[MIT](LICENSE)
+[MIT](LICENSE) © 西瓜同学
