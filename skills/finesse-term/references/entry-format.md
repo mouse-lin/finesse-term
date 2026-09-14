@@ -115,7 +115,7 @@ H5 那册的 pairs 密度最高，因为移动端的坑几乎都是成对的。�
 
 ## 加一条新词条
 
-1. 选册：移动端专属进 `h5.json`，动效和质感进 `motion.json`，其余进 `web.json`
+1. 选册：移动端专属进 `h5.json`，小程序专属进 `mp.json`，动效和质感进 `motion.json`，盒模型、跨域、缓存这类前端基础概念进 `base.json`，其余进 `web.json`
 2. 按上面的十个字段写全，`trigger` 至少四条
 3. 双向挂 `pairs`——如果 A 的 pairs 里有 B，通常 B 的 pairs 里也该有 A
 4. 跑 `node scripts/term.mjs check`，必须零问题

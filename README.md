@@ -1,6 +1,21 @@
+![finesse-term cover](assets/cover.jpg)
+
+<div align="center">
+
 # finesse-term —— 说法层
 
-> **它不决定做什么，也不决定做得好不好看。它只决定这件事该怎么说。**
+**它不决定做什么，也不决定做得好不好看。它只决定这件事该怎么说。**
+
+[![version](https://img.shields.io/badge/version-0.1.0-111?style=flat-square)](.claude-plugin/plugin.json)
+[![license](https://img.shields.io/badge/license-MIT-111?style=flat-square)](LICENSE)
+[![terms](https://img.shields.io/badge/术语词条-128_条-c9863f?style=flat-square)](skills/finesse-term/data)
+[![cases](https://img.shields.io/badge/检索用例-30_条-5ee9c8?style=flat-square)](scripts/check.mjs)
+
+[快速开始](#快速开始) · [它长这样](#它长这样) · [三条硬门禁](#三条硬门禁) · [术语库](#术语库) · [可以这样问](#可以这样问) · [安装](#安装--工具支持) · [开发](#开发)
+
+</div>
+
+---
 
 用户说不出「安全区」，不是因为词汇量小，是因为他描述的是**症状**（按钮被下面那条黑杠挡住了），而术语描述的是**成因**。这中间的翻译，是他自己做不到、而每一轮对话都需要的那一步。
 
@@ -10,6 +25,28 @@
 2. 主动点出你刚刚描述了、却叫不出名字的那个术语 —— 连同它最常见的那个坑。
 
 > 作者：西瓜同学 · MIT · finesse 家族第五个 Skill
+
+---
+
+## 快速开始
+
+```bash
+npx skills add https://github.com/mouse-lin/finesse-term
+```
+
+装完不用专门调用它，照常干活、照常用大白话描述界面就行：
+
+> "底下那个按钮在我 iPhone 上被挡住了一半，帮我修一下"
+> "弹窗底下还能滑，关掉又回到顶部了"
+> "这个卡片看着有点土，说不出哪儿不对"
+
+它会先把活干完，再在结果里顺手点出术语和那个坑。想主动用，就 `/finesse-term say 你的原话`（其它命令见[动作命令](#动作命令)）。
+
+> [!TIP]
+> 装完想确认它在工作：问一句「底下那条黑杠挡住按钮了，这个专业上叫什么」。答出**安全区（Safe Area）**，并提醒吸底操作栏要一起处理，就对了。
+
+> [!NOTE]
+> 本地检索器需要 **Node.js 20+**（零依赖、不联网）。Claude Code 自带 Node 环境，一般不用额外装。
 
 ---
 
@@ -83,13 +120,15 @@
 
 ## 术语库
 
-108 条，三册：
+128 条，五册：
 
 | 册 | 收什么 | 条数 |
 |:---|:---|:---|
 | `data/web.json` | 通用 Web：布局 · 组件 · 状态 · 交互 · 表单 · 无障碍 · 性能 | 44 |
 | `data/h5.json` | 移动 H5 专属：适配 · 容器 · 手势 · 键盘 · 弹层 · WebView | 30 |
 | `data/motion.json` | 动效与质感：过渡 · 转场 · 反馈 · 材质 · 排版节奏 · 高级交互手法 | 34 |
+| `data/mp.json` | 小程序专属：分包 · 页面栈 · 生命周期 · 自定义组件 · 登录与消息 · 云开发 | 10 |
+| `data/base.json` | 前端基础概念：盒模型 · 弹性布局 · 定位 · 事件流 · 跨域 · 缓存 · 首屏 · 存储 | 10 |
 
 每条十个字段。其中三个是这个库和普通术语表的差别：
 
@@ -107,7 +146,13 @@
 
 `docs/index.html` 是这个库的静态浏览页——零依赖、离线能开、按你的原话搜（`npm run docs` 生成）。
 
-每条词条都有一组示意图讲结构。其中 **43 条另带一块「真机演示」**：不是截图，是一段真在跑的界面，装在手机画框里。
+打开方式：clone 仓库后直接双击 `docs/index.html`，或者在地址后面加 `#词条id` 直接展开某一条：
+
+```bash
+open docs/index.html#safe-area        # macOS；Windows 用 start，Linux 用 xdg-open
+```
+
+116 条词条带一组示意图讲结构，其中 **43 条另带一块「真机演示」**：不是截图，是一段真在跑的界面，装在手机画框里。
 
 - 滚动穿透真的会穿透，关掉弹层真的弹回第一屏
 - 下拉刷新、左滑删除、长按菜单、底部弹层，都能用手指拖
@@ -190,12 +235,100 @@ finesse-term    怎么说       ← 上面每一段里都在跑
 
 ---
 
+## 安装 & 工具支持
+
+> [!NOTE]
+> 推荐用 `npx skills`，一条命令通用于所有 agent，运行时会让你选装到哪个 agent。其他装法在下面的折叠区里。
+
+```bash
+npx skills add https://github.com/mouse-lin/finesse-term
+```
+
+整个 Skill 就是 `skills/finesse-term/` 这一个目录（`SKILL.md` + `data/` + `references/` + `scripts/`），手动装也只是把它放到 agent 能读到的地方。
+
+| 工具 | 深度 | 装法 |
+|:---|:---|:---|
+| **Claude Code** | 完整 | `npx skills`，或复制目录到 `~/.claude/skills/` |
+| **Trae / Trae 国内版** | 完整 | 复制目录到项目的 `.trae/skills/` / `.trae-cn/skills/` |
+| **CodeBuddy** | 完整 | 复制目录到项目的 `.codebuddy/skills/` |
+| **豆包 Doubao** | 完整 | 复制目录到豆包用户技能目录（[见下](#豆包doubao)） |
+| **Cursor / OpenAI Codex / GitHub Copilot** | 手动引用 | 目录放进项目，在规则文件里指向 `SKILL.md`（[见下](#cursor--openai-codex--github-copilot)） |
+| **其他（ChatGPT / API）** | 仅规则 | 把 `SKILL.md` 粘进 system prompt；跑不了检索器，只能按规则说话，查不了本地库 |
+
+<details>
+<summary><b>各工具的具体命令</b></summary>
+
+<br>
+
+先把仓库拉下来：
+
+```bash
+git clone https://github.com/mouse-lin/finesse-term
+cd finesse-term
+```
+
+### Claude Code
+
+```bash
+# 全局可用
+cp -r skills/finesse-term ~/.claude/skills/
+# 或只在某个项目里用
+cp -r skills/finesse-term your-project/.claude/skills/
+```
+
+对话里描述界面时自动触发，也可以 `/finesse-term` 直接调用。
+
+### Trae
+
+```bash
+cp -r skills/finesse-term your-project/.trae/skills/
+# 国内版：
+cp -r skills/finesse-term your-project/.trae-cn/skills/
+```
+
+### CodeBuddy
+
+```bash
+cp -r skills/finesse-term your-project/.codebuddy/skills/
+```
+
+### 豆包（Doubao）
+
+豆包桌面版的技能目录与 Claude Code 同构，但它是**全局安装**，不放进项目：
+
+```bash
+# macOS 豆包桌面版
+DOUBAO=~/"Library/Application Support/Doubao/Default/.doubao/agent_mode/workspace/.user_skills"
+mkdir -p "$DOUBAO" && cp -r skills/finesse-term "$DOUBAO"/
+```
+
+装完重启豆包，问一句「你现在能用哪些技能」确认它在列表里。豆包没有斜杠命令，只能自然语言触发；环境里没有 node 时，Skill 会退回直接读 `data/*.json` 查词条。
+
+### Cursor / OpenAI Codex / GitHub Copilot
+
+这三个不认 Skill 目录，需要把目录放进项目，再用各自的规则文件告诉它去读：
+
+```bash
+cp -r skills/finesse-term your-project/skills/
+```
+
+然后在 `.cursor/rules/finesse-term.mdc`、`AGENTS.md` 或 `.github/copilot-instructions.md` 里加一句：
+
+```text
+用户用大白话描述网页或 H5 的效果、交互、状态或故障时，按 skills/finesse-term/SKILL.md 执行；
+其中的 <skill-root> 就是 skills/finesse-term。
+```
+
+</details>
+
+---
+
 ## 开发
 
 需要 Node.js 20 或更高版本，零依赖。
 
 ```bash
-npm test        # 数据完整性 + 18 条检索回归用例
+npm test        # 数据完整性 + 30 条检索回归用例
 ```
 
 直接查库：
@@ -217,7 +350,9 @@ skills/finesse-term/
 ├── data/
 │   ├── web.json                # 通用 Web           44 条
 │   ├── h5.json                 # 移动 H5 专属       30 条
-│   └── motion.json             # 动效与质感         34 条
+│   ├── motion.json             # 动效与质感         34 条
+│   ├── mp.json                 # 小程序专属         10 条
+│   └── base.json               # 前端基础概念       10 条
 ├── references/
 │   ├── entry-format.md         # 词条契约：十个字段怎么写，怎么加新词
 │   ├── retrieval.md            # 检索策略：拆子句、控噪音、零命中怎么办
