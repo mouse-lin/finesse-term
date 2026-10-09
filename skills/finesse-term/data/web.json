@@ -295,13 +295,13 @@
       "id": "sticky",
       "title": "粘性定位",
       "en": "Sticky Positioning",
-      "aliases": ["吸顶", "滚动时固定住", "跟着滚到顶就停"],
+      "aliases": ["吸顶", "滚动时固定住", "跟着滚到顶就停", "侧栏固定"],
       "layer": "layout",
       "plain": "元素跟着页面滚，滚到某个位置就贴住不动了。表头、筛选栏常用。",
       "say": "表头设为吸顶，滚动时贴在容器顶部并加一层投影区分层级。",
       "trap": "多个吸顶元素叠在一起且没算偏移 —— 第二个盖住第一个。吸顶多于一层时必须显式算 top 偏移量。",
       "pairs": ["z-index-layer", "safe-area", "tab-bar"],
-      "trigger": ["滚动时固定", "吸顶", "表头别滚走", "一直在上面"]
+      "trigger": ["滚动时固定", "吸顶", "表头别滚走", "一直在上面", "一滚下去提醒就没了", "往下滚它别动"]
     },
     {
       "id": "responsive-breakpoint",
@@ -494,6 +494,66 @@
       "trap": "手机上照搬两栏 —— 两边都挤得没法看。窄屏时主从必须退化成「列表页 → 详情页」两级跳转。",
       "pairs": ["drawer", "responsive-breakpoint", "tabs"],
       "trigger": ["左边列表右边详情", "点一条右边显示", "两栏"]
+    },
+    {
+      "id": "hero-module",
+      "title": "主次布局",
+      "en": "Hero Module",
+      "aliases": ["一大带多小", "主模块", "首屏主卡", "Bento 主格", "Dashboard 主次"],
+      "layer": "layout",
+      "plain": "Dashboard 首屏只让一块最大，其余都明显比它小，进来第一眼就知道先看哪。",
+      "say": "Dashboard 首屏采用主次布局：主模块占 8 列跨两行，次要指标用 4 列小模块排在右侧和下方，全页只有一个视觉重心。",
+      "trap": "定了主模块，又把另外两块也放大加粗 —— 三个都想当主角，等于没有主角。主模块只能有一个，其余至少小一半。",
+      "pairs": ["grid-layout", "whitespace", "responsive-breakpoint"],
+      "trigger": ["页面没有重点", "每块都一样大", "不知道先看哪", "最重要的那张图放大", "后台满屏都是格子"]
+    },
+    {
+      "id": "stacked-bands",
+      "title": "通栏横带",
+      "en": "Stacked Bands",
+      "aliases": ["横带分层", "横向分层", "全宽分区", "一条一条往下排", "Dashboard 分层"],
+      "layer": "layout",
+      "plain": "Dashboard 整页从上到下切成几条横着铺满的区域，一条只放一类内容。",
+      "say": "Dashboard 页面采用通栏横带布局：自上而下分为概览、趋势、明细三层，每层横贯全宽，层与层之间留 48px 间距。",
+      "trap": "每条横带里又各自分三四栏、高度还不一样 —— 横带被切碎，又变回一堆散块。一条横带只放一类内容，条与条的间距要比条内间距大一档。",
+      "pairs": ["grid-layout", "whitespace", "sticky"],
+      "trigger": ["模块东一块西一块", "从上到下分几层", "每一行都铺满", "上面数字下面图表", "后台排得很散"]
+    },
+    {
+      "id": "full-bleed-canvas",
+      "title": "全幅画布",
+      "en": "Full-bleed Canvas",
+      "aliases": ["画布铺满", "浮动面板", "Floating Panels", "地图铺底", "大图做底"],
+      "layer": "layout",
+      "plain": "Dashboard 主区用一张大图或地图铺满当底，数字和列表做成小面板浮在它上面。",
+      "say": "Dashboard 主区用全幅画布作底，指标与列表做成浮动面板叠在上层，面板贴四角排布，留 16px 边距。",
+      "trap": "面板铺得太多太大，把底下的图盖掉一大半 —— 画布成了看不见的背景。面板总面积控制在三分之一以内，中间那块留给图。",
+      "pairs": ["z-index-layer", "contrast-ratio", "aspect-ratio"],
+      "trigger": ["图和数字各占一半", "地图铺满整个页面", "面板浮在图上面", "大图当背景", "图被挤得很小"]
+    },
+    {
+      "id": "kanban-columns",
+      "title": "看板分列",
+      "en": "Kanban Columns",
+      "aliases": ["看板", "Kanban", "按状态分列", "任务看板", "Dashboard 看板"],
+      "layer": "layout",
+      "plain": "Dashboard 里把事情按进行到哪一步分成几列并排，每件事是列里的一小块。",
+      "say": "Dashboard 采用看板分列布局：按状态分为等宽列，列头显示名称与计数，列内纵向堆叠，整体可横向滚动。",
+      "trap": "列宽跟着内容伸缩 —— 某一列字多就被撑宽，其余列被挤窄。列宽固定，列多了整体横向滚动，别去压缩单列。",
+      "pairs": ["empty-state", "truncate", "virtual-list"],
+      "trigger": ["不知道进行到哪一步", "按状态分成几列", "待办进行中已完成", "一列一列并排", "拖到下一列"]
+    },
+    {
+      "id": "timeline-swimlanes",
+      "title": "时间轴泳道",
+      "en": "Timeline Swimlanes",
+      "aliases": ["泳道图", "甘特图", "Gantt", "排期图", "Dashboard 排期"],
+      "layer": "layout",
+      "plain": "Dashboard 顶上一条时间刻度，下面一行一个人或一类事，每件事按开始和结束时间画成一根横条。",
+      "say": "Dashboard 采用时间轴泳道布局：顶部为时间刻度，每行一条泳道，事项按起止时间绘制为横条，用竖向参考线标记当前时刻。",
+      "trap": "同一条泳道里时间重叠的两件事画在同一行 —— 后一条把前一条盖住，撞期反而看不出来。重叠时在泳道内分行错开。",
+      "pairs": ["sticky", "truncate", "tooltip"],
+      "trigger": ["看不出谁和谁撞了", "谁在忙谁空着", "按时间排成横条", "排期一眼看不清", "什么时候开始什么时候结束"]
     },
     {
       "id": "tab-order",

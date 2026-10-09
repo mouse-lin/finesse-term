@@ -50,6 +50,12 @@ const CASES = [
   ["汉堡菜单变叉", "icon-morph"],
   ["堆叠卡片抽走一张", "card-stack-swipe"],
   ["弹出来太快看不清", "sheet-hold"],
+  ["后台页面没有重点", "hero-module"],
+  ["模块东一块西一块", "stacked-bands"],
+  ["一滚下去提醒就没了", "sticky"],
+  ["图和数字各占一半", "full-bleed-canvas"],
+  ["不知道进行到哪一步", "kanban-columns"],
+  ["看不出谁和谁撞了", "timeline-swimlanes"],
   ["帮我把这个接口的返回值改成数组", null],
   ["把这段代码抽成一个函数", null],
 ];
