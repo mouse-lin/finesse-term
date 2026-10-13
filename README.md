@@ -8,8 +8,8 @@
 
 [![version](https://img.shields.io/badge/version-0.1.0-111?style=flat-square)](.claude-plugin/plugin.json)
 [![license](https://img.shields.io/badge/license-MIT-111?style=flat-square)](LICENSE)
-[![terms](https://img.shields.io/badge/术语词条-133_条-c9863f?style=flat-square)](skills/finesse-term/data)
-[![cases](https://img.shields.io/badge/检索用例-30_条-5ee9c8?style=flat-square)](scripts/check.mjs)
+[![terms](https://img.shields.io/badge/术语词条-139_条-c9863f?style=flat-square)](skills/finesse-term/data)
+[![cases](https://img.shields.io/badge/检索用例-44_条-5ee9c8?style=flat-square)](scripts/check.mjs)
 
 [快速开始](#快速开始) · [实际效果](#实际效果) · [核心原则](#核心设计原则) · [术语库](#术语库) · [交互文档](#交互文档) · [指令说明](#动作命令) · [安装与集成](#安装--工具支持)
 
@@ -95,11 +95,11 @@ iOS 全面屏底部的 Home 指示条会遮挡 fixed 元素，模拟器上通常
 
 ## 术语库
 
-共 133 条前端 / 移动端常见概念，分 5 册：
+共 139 条前端 / 移动端常见概念，分 5 册：
 
 | 文件 | 覆盖范围 | 条数 |
 |:---|:---|:---|
-| `data/web.json` | 通用 Web：布局、组件、界面状态、交互、表单、无障碍、性能、Dashboard 整页布局 | 49 |
+| `data/web.json` | 通用 Web：布局、组件、界面状态、交互、表单、无障碍、性能、Dashboard 整页布局与菜单 | 55 |
 | `data/h5.json` | 移动端 H5：视口适配、滚动容器、手势、键盘、弹层、WebView | 30 |
 | `data/motion.json` | 动效与质感：缓动曲线、过渡转场、微交互反馈、排版节奏 | 34 |
 | `data/mp.json` | 小程序：分包加载、页面栈、生命周期、自定义组件、登录与消息 | 10 |
@@ -273,7 +273,7 @@ npm run docs
 skills/finesse-term/
 ├── SKILL.md                    # Skill 定义（唯一真源）
 ├── data/
-│   ├── web.json                # 通用 Web           49 条
+│   ├── web.json                # 通用 Web           55 条
 │   ├── h5.json                 # 移动 H5            30 条
 │   ├── motion.json             # 动效与质感         34 条
 │   ├── mp.json                 # 小程序             10 条
