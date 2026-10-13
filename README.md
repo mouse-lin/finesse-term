@@ -6,7 +6,7 @@
 
 面向开发对话的界面与交互术语对齐工具。将口语化、症状式的界面描述，转化为可以直接发给 Agent 的准确技术需求。
 
-[![version](https://img.shields.io/badge/version-0.1.0-111?style=flat-square)](.claude-plugin/plugin.json)
+[![version](https://img.shields.io/badge/version-0.2.0-111?style=flat-square)](.claude-plugin/plugin.json)
 [![license](https://img.shields.io/badge/license-MIT-111?style=flat-square)](LICENSE)
 [![terms](https://img.shields.io/badge/术语词条-139_条-c9863f?style=flat-square)](skills/finesse-term/data)
 [![cases](https://img.shields.io/badge/检索用例-44_条-5ee9c8?style=flat-square)](scripts/check.mjs)
@@ -118,7 +118,7 @@ iOS 全面屏底部的 Home 指示条会遮挡 fixed 元素，模拟器上通常
 仓库内置离线静态浏览页 `docs/index.html`（由 `npm run docs` 生成）：
 
 - 支持用口语描述直接检索词条。
-- 116 条词条带结构示意图。
+- 127 条词条带结构示意图。
 - 43 条带可操作的交互演示（H5 册 30 条 + 动效册 13 条），在手机画框中直接操作，例如滚动穿透、下拉刷新、左滑删除。
 - 演示可切换"错误做法 / 正确做法"，两侧共用同一段 DOM，只差一个属性。
 

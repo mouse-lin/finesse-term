@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "finesse-term",
-  "description": "The vocabulary layer for Web and mobile H5 — turns a description the user can't quite phrase into one accurate sentence they can hand straight to an Agent, and names the term they just described but couldn't call. Applies in any turn rather than one stage: whenever someone says 「鼠标放上去变个色」「底下那条黑杠挡住按钮了」「弹窗底下还能滑」「看着有点土」, it finishes the actual work first and then drops the term, one plain-language explanation, and the trap that term most often falls into. 128 local entries across five books — web · h5 · motion · mini-program · fundamentals, zero network calls, searched by how a user would describe the symptom rather than by what the thing is called — because not knowing the name is the whole problem. Enforces three gates: every term must point at the exact words in the user's own sentence that triggered it, H5 terms ship in pairs because those traps are paired (吸底 ↔ 安全区, 弹层 ↔ 滚动锁, 输入框 ↔ 键盘顶起), and the work always ships before the vocabulary.",
-  "version": "0.1.0",
+  "description": "The vocabulary layer for Web and mobile H5 — turns a description the user can't quite phrase into one accurate sentence they can hand straight to an Agent, and names the term they just described but couldn't call. Applies in any turn rather than one stage: whenever someone says 「鼠标放上去变个色」「底下那条黑杠挡住按钮了」「弹窗底下还能滑」「看着有点土」, it finishes the actual work first and then drops the term, one plain-language explanation, and the trap that term most often falls into. 139 local entries across five books — web · h5 · motion · mini-program · fundamentals, zero network calls, searched by how a user would describe the symptom rather than by what the thing is called — because not knowing the name is the whole problem. Enforces three gates: every term must point at the exact words in the user's own sentence that triggered it, H5 terms ship in pairs because those traps are paired (吸底 ↔ 安全区, 弹层 ↔ 滚动锁, 输入框 ↔ 键盘顶起), and the work always ships before the vocabulary.",
+  "version": "0.2.0",
   "author": {
     "name": "西瓜同学"
   },
