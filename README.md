@@ -6,10 +6,10 @@
 
 面向开发对话的界面与交互术语对齐工具。将口语化、症状式的界面描述，转化为可以直接发给 Agent 的准确技术需求。
 
-[![version](https://img.shields.io/badge/version-0.2.0-111?style=flat-square)](.claude-plugin/plugin.json)
+[![version](https://img.shields.io/badge/version-0.3.0-111?style=flat-square)](.claude-plugin/plugin.json)
 [![license](https://img.shields.io/badge/license-MIT-111?style=flat-square)](LICENSE)
-[![terms](https://img.shields.io/badge/术语词条-139_条-c9863f?style=flat-square)](skills/finesse-term/data)
-[![cases](https://img.shields.io/badge/检索用例-44_条-5ee9c8?style=flat-square)](scripts/check.mjs)
+[![terms](https://img.shields.io/badge/术语词条-142_条-c9863f?style=flat-square)](skills/finesse-term/data)
+[![cases](https://img.shields.io/badge/检索用例-54_条-5ee9c8?style=flat-square)](scripts/check.mjs)
 
 [快速开始](#快速开始) · [实际效果](#实际效果) · [核心原则](#核心设计原则) · [术语库](#术语库) · [交互文档](#交互文档) · [指令说明](#动作命令) · [安装与集成](#安装--工具支持)
 
@@ -95,13 +95,13 @@ iOS 全面屏底部的 Home 指示条会遮挡 fixed 元素，模拟器上通常
 
 ## 术语库
 
-共 139 条前端 / 移动端常见概念，分 5 册：
+共 142 条前端 / 移动端常见概念，分 5 册：
 
 | 文件 | 覆盖范围 | 条数 |
 |:---|:---|:---|
-| `data/web.json` | 通用 Web：布局、组件、界面状态、交互、表单、无障碍、性能、Dashboard 整页布局与菜单 | 55 |
+| `data/web.json` | 通用 Web：布局、组件、界面状态、交互、表单、无障碍、性能、Dashboard 整页布局与菜单 | 57 |
 | `data/h5.json` | 移动端 H5：视口适配、滚动容器、手势、键盘、弹层、WebView | 30 |
-| `data/motion.json` | 动效与质感：缓动曲线、过渡转场、微交互反馈、排版节奏 | 34 |
+| `data/motion.json` | 动效与质感：缓动曲线、过渡转场、微交互反馈、排版节奏 | 35 |
 | `data/mp.json` | 小程序：分包加载、页面栈、生命周期、自定义组件、登录与消息 | 10 |
 | `data/base.json` | 前端基础：盒模型、Flex 布局、定位、事件冒泡、跨域、缓存、首屏、存储 | 10 |
 
@@ -118,7 +118,7 @@ iOS 全面屏底部的 Home 指示条会遮挡 fixed 元素，模拟器上通常
 仓库内置离线静态浏览页 `docs/index.html`（由 `npm run docs` 生成）：
 
 - 支持用口语描述直接检索词条。
-- 127 条词条带结构示意图。
+- 130 条词条带结构示意图。
 - 43 条带可操作的交互演示（H5 册 30 条 + 动效册 13 条），在手机画框中直接操作，例如滚动穿透、下拉刷新、左滑删除。
 - 演示可切换"错误做法 / 正确做法"，两侧共用同一段 DOM，只差一个属性。
 
@@ -129,6 +129,12 @@ iOS 全面屏底部的 Home 指示条会遮挡 fixed 元素，模拟器上通常
 新增演示的规范写在 `scripts/demos.mjs` 文件头部。
 
 ---
+
+### Apple 设计表达与浏览样式
+
+0.3.0 新增便当盒布局、表面明度层级、横向图库，补充圆角与间距的口语检索，并移除字重、卡片比例等一刀切限制。只说“苹果风”不会自动匹配玻璃或 Bento；具体设计仍由 UI Skill 和项目规范决定。
+
+浏览页默认采用 Apple 图示精选与阅读列表布局：顶部展示布局、明度与横向图库三张精选卡，下方以中性表面承载词条；搜索或筛选时收起精选区。顶部可切换回“经典”，切换使用淡入淡出过渡；开启减少动态效果时直接切换。不支持页面过渡的浏览器使用简化淡入。设计风格与深浅色独立切换，并在本机记住选择。搜索、筛选、示意图、复制话术与交互演示共用同一套数据。存储不可用时仍可切换，本次选择不持久化。
 
 ## 动作命令
 

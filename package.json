@@ -1,6 +1,6 @@
 {
   "name": "finesse-term",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Web 与 移动 H5 的说法层 —— 把说不准的界面描述换成准确需求，并点出用户描述了却叫不出名字的术语。",
   "type": "module",

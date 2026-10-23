@@ -2353,4 +2353,9 @@ const BASE = {
 
 const DIAGRAMS = Object.assign({}, H5, MP, BASE, MOTION, WEB_STATE, WEB_COMP, WEB_REST);
 
+Object.assign(DIAGRAMS, {
+  "bento-grid": [fig("主卡获得更大面积，辅助内容按阅读顺序排列。", '<rect x="12" y="12" width="140" height="76" rx="10" class="dgm-ok"/><rect x="160" y="12" width="88" height="34" rx="8" class="dgm-chrome"/><rect x="160" y="54" width="88" height="34" rx="8" class="dgm-chrome"/>')],
+  "surface-hierarchy": [fig("用表面明暗差分层，文字仍需清楚。", '<rect x="10" y="10" width="240" height="80" rx="10" fill="#ddd"/><rect x="24" y="24" width="96" height="52" rx="8" fill="#fff"/><rect x="140" y="24" width="96" height="52" rx="8" fill="#333"/><path d="M38 42h65M38 54h42" stroke="#222" stroke-width="4"/><path d="M154 42h65M154 54h42" stroke="#fff" stroke-width="4"/>')],
+  "horizontal-gallery": [fig("横向浏览同时提供明确的前后操作。", '<rect x="38" y="18" width="78" height="64" rx="8" class="dgm-ok"/><rect x="124" y="18" width="78" height="64" rx="8" class="dgm-chrome"/><path d="m24 38-12 12 12 12M230 38l12 12-12 12" fill="none" stroke="currentColor" stroke-width="3"/>')]
+});
 export { DIAGRAMS, W, H };

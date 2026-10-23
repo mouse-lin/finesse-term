@@ -22,6 +22,17 @@ function run(args) {
 
 /** [用户原话, 必须出现在前 N 个候选里的词条 id] —— null 表示这句话不该命中任何术语 */
 const CASES = [
+  ["卡片像便当盒一样大小错落", "bento-grid"],
+  ["主卡跨两行", "bento-grid"],
+  ["卡片里面和外面的圆角要协调", "radius-consistency"],
+  ["横向紧一点纵向松一点", "whitespace"],
+  ["白底灰卡，黑底深卡", "surface-hierarchy"],
+  ["不用阴影也能分层", "surface-hierarchy"],
+  ["横向图库可以拖动也可以点按钮", "horizontal-gallery"],
+  ["关掉大图回到刚才那张", "horizontal-gallery"],
+  ["用苹果官网的风格做产品介绍页", null],
+  ["苹果风", null],
+
   ["底部按钮被那条黑杠挡住了", "safe-area"],
   ["鼠标放上去变个色", "hover-state"],
   ["点下去也要有一下反馈", "active-state"],

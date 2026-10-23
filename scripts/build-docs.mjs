@@ -134,11 +134,12 @@ const LAYER_LABEL = {
 /* -------------------------------------------------------------------- 页面 */
 
 const html = `<!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-design="apple">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>finesse-term 术语库</title>
+<script>try{document.documentElement.dataset.design=localStorage.getItem('finesse-term-design')==='classic'?'classic':'apple';var t=localStorage.getItem('finesse-term-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;}catch(e){}</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
@@ -553,6 +554,124 @@ main{padding:30px 44px 100px 26px; min-width:0}
 }
 
 ${demoCss}
+
+/* Apple reading surface. Classic styles above remain unchanged. */
+.design-switch{display:flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:30px;background:var(--bg-2)}
+.design-switch button{min-height:38px;padding:0 14px;border:0;border-radius:24px;background:none;color:var(--fg-dim);font:500 12px var(--sans);cursor:pointer}
+.design-switch button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.design-switch button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.apple-intro{display:none}
+:root[data-design="apple"]{--bg:#fff;--bg-2:#f5f5f7;--panel:#f5f5f7;--fg:#1d1d1f;--fg-dim:#626267;--fg-faint:#6e6e73;--line:#d2d2d7;--line-soft:#e8e8ed;--accent:#1d1d1f;--accent-dim:#ededf0;--nav-bg:rgba(255,255,255,.9);--sans:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;--disp:var(--sans);--mono:var(--sans)}
+:root[data-design="apple"][data-theme="dark"]{--bg:#000;--bg-2:#1d1d1f;--panel:#1d1d1f;--fg:#f5f5f7;--fg-dim:#b6b6bd;--fg-faint:#a1a1a6;--line:#424245;--line-soft:#29292d;--accent:#f5f5f7;--accent-dim:#303033;--nav-bg:rgba(0,0,0,.9)}
+@media(prefers-color-scheme:dark){:root[data-design="apple"]:not([data-theme="light"]){--bg:#000;--bg-2:#1d1d1f;--panel:#1d1d1f;--fg:#f5f5f7;--fg-dim:#b6b6bd;--fg-faint:#a1a1a6;--line:#424245;--line-soft:#29292d;--accent:#f5f5f7;--accent-dim:#303033;--nav-bg:rgba(0,0,0,.9)}}
+[data-design="apple"] .bg-blob,[data-design="apple"] body::after{display:none}
+[data-design="apple"] .brand b i{animation:none}
+[data-design="apple"] body>nav{padding:18px 32px;gap:16px}
+[data-design="apple"] .brand{gap:10px;flex-wrap:wrap}
+[data-design="apple"] .brand b{font-size:21px;letter-spacing:-.055em}
+[data-design="apple"] .brand span{font-size:11px;letter-spacing:0}
+[data-design="apple"] #q{background:var(--bg-2);border-color:transparent;border-radius:12px}
+[data-design="apple"] .shell{max-width:1600px;grid-template-columns:200px minmax(0,1fr)}
+[data-design="apple"] aside{padding:34px 16px 30px 30px}
+[data-design="apple"] main{padding:44px 36px 80px 28px}
+[data-design="apple"] .side-item{font-size:12px;letter-spacing:0;padding:10px;min-height:38px;border-left:0;border-radius:9px}
+[data-design="apple"] .side-item.active{background:var(--bg-2)}
+[data-design="apple"] .apple-intro{display:block;margin-bottom:52px}
+[data-design="apple"] .apple-intro[hidden]{display:none}
+.apple-heading{display:flex;align-items:end;justify-content:space-between;gap:32px;margin-bottom:30px}
+.apple-heading h1{font-size:clamp(32px,3.5vw,50px);font-weight:600;line-height:1.15;letter-spacing:-.045em;margin:0}
+.apple-heading p{font-size:13px;line-height:1.8;color:var(--fg-dim);margin:0;max-width:240px}
+.feature-gallery{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-items:start;padding:6px 0 12px}
+.term-feature{position:relative;text-align:left;border:0;padding:26px 24px 22px;border-radius:24px;min-width:0;height:310px;overflow:hidden;display:flex;flex-direction:column;color:#1d1d1f;background:#f5f5f7;cursor:pointer;font:inherit;transition:transform .25s,box-shadow .25s}
+.term-feature:hover{transform:translateY(-4px);box-shadow:0 12px 24px #00000012}
+.term-feature:focus-visible{outline:3px solid #0071e3;outline-offset:4px}
+.term-feature small{font-size:11px;opacity:.72}
+.term-feature h2{font-size:25px;font-weight:600;letter-spacing:-.035em;line-height:1.2;margin:9px 0 0}
+.feature-art{margin:auto 0;min-height:120px;display:flex;align-items:center;justify-content:center}
+.feature-foot{display:flex;align-items:center;justify-content:space-between;font-size:11px}
+.feature-foot b{flex:0 0 28px;line-height:0;display:grid;place-items:center;border-radius:50%;width:28px;height:28px;background:#1d1d1f;color:white;font-size:20px;font-weight:400}
+.feature-palette{margin-top:22px;background:#000;color:#f5f5f7}
+.feature-palette .feature-foot b{background:#f5f5f7;color:#1d1d1f}
+.palette-objects{display:grid;grid-template-columns:1.3fr 1fr;gap:8px;width:100%;height:124px;padding:12px;background:#1d1d1f;border-radius:18px;transform:rotate(-5deg)}
+.palette-objects i{display:grid;place-items:center;font-style:normal;background:#343436;border-radius:9px;font-size:16px}
+.palette-objects i:first-child{grid-row:span 2;background:#f5f5f7;color:#1d1d1f;font-size:38px;letter-spacing:-3px}
+.bento-objects{display:grid;grid-template-columns:1.4fr 1fr;gap:8px;width:100%;height:130px;transform:rotate(-4deg)}
+.bento-objects i{border-radius:12px;background:#fff;display:grid;place-items:center;font-style:normal;font-size:12px;color:#626267}
+.bento-objects i:first-child{grid-row:span 2;background:#dce9f8;color:#215e9c;font-size:44px;font-weight:600;letter-spacing:-3px}
+.feature-spatial{background:radial-gradient(ellipse at 10% 20%,#d3bca5,transparent 60%),radial-gradient(ellipse at 90% 80%,#8b9fac,transparent 65%),#bac4c7;color:#202831}
+.glass-objects{display:flex;gap:10px;perspective:500px;width:100%;justify-content:center}
+.glass-objects i{height:120px;width:72px;border-radius:16px;border:1px solid #ffffff9c;background:linear-gradient(145deg,#ffffff90,#ffffff20);box-shadow:0 14px 20px #24343c20;backdrop-filter:blur(12px);transform:rotate(-10deg);display:grid;place-items:center;font-style:normal;font-size:30px;color:#334858}
+.glass-objects i:nth-child(2){transform:translateY(-8px) rotate(-10deg)}
+.glass-objects i:nth-child(3){transform:translateY(8px) rotate(-10deg)}
+[data-design="apple"] #count{font-size:13px;letter-spacing:0;color:var(--fg-dim);padding-top:25px;border-top:1px solid var(--line-soft);margin:0 0 20px}
+[data-design="apple"] .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+[data-design="apple"] .card{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:12px 20px;min-width:0;padding:24px;border:0;border-radius:20px;box-shadow:none;background:var(--panel);overflow-wrap:anywhere;align-items:start}
+[data-design="apple"] .card:hover{transform:translateY(-2px);box-shadow:none;background:var(--bg-2)}
+[data-design="apple"] .card-head{display:block;margin:0}
+[data-design="apple"] .card-title{font-size:21px;letter-spacing:-.03em;display:block}
+[data-design="apple"] .card-en{display:block;font-size:11px;letter-spacing:0;margin-top:4px}
+[data-design="apple"] .card .tag,[data-design="apple"] .card .quote{display:none}
+[data-design="apple"] .card .plain{grid-column:1;font-size:13px;line-height:1.7;color:var(--fg-dim);margin:0}
+[data-design="apple"] .card .dgm-figs{grid-column:2;grid-row:1/4;display:block;align-self:center;margin:0;min-width:0}
+[data-design="apple"] .card .dgm-fig{margin:0;display:block}
+[data-design="apple"] .card .dgm-box{border:0;padding:0;background:none}
+[data-design="apple"] .card-cta{grid-column:1;font-size:10px;letter-spacing:0;color:var(--fg-dim);padding:0;margin:6px 0 0}
+[data-design="apple"] .modal{border-radius:24px;background:var(--bg)}
+[data-design="apple"] .say-box{border-color:var(--line)}
+[data-design="apple"] ::selection{background:var(--fg);color:var(--bg)}
+@media(max-width:1200px){[data-design="apple"] .card{grid-template-columns:minmax(0,1fr)}[data-design="apple"] .card .dgm-figs{grid-column:1;grid-row:3;width:100%;max-width:240px;margin:8px auto}[data-design="apple"] .card-cta{grid-row:4}.term-feature{padding:22px 18px;height:295px}.term-feature h2{font-size:22px}}
+@media(max-width:760px){[data-design="apple"] body>nav{padding:16px 20px;gap:12px}.searchwrap{order:3;flex-basis:100%}.design-switch{margin-left:auto}[data-design="apple"] .shell{grid-template-columns:minmax(0,1fr)}[data-design="apple"] aside{position:static;max-height:none;padding:16px 20px 0}[data-design="apple"] main{padding:28px 20px 60px}.apple-heading{display:block}.apple-heading p{margin-top:16px}.feature-gallery{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding:5px 3px 20px}.term-feature{flex:0 0 84%;scroll-snap-align:start;height:290px}.feature-palette{margin-top:0}[data-design="apple"] .grid{grid-template-columns:minmax(0,1fr)}[data-design="apple"] .card{padding:22px}[data-design="apple"] .card .dgm-figs{max-width:280px}.feature-gallery:focus-visible{outline:2px solid var(--fg);outline-offset:4px}}
+
+
+/* Shared detail language: calm surfaces, clear controls, generous illustration space. */
+.feature-foot{width:100%;min-height:28px}
+.feature-foot b svg{display:block;width:16px;height:16px}
+[data-design="apple"] .side-label{letter-spacing:0;font-size:11px;color:var(--fg-dim);padding-bottom:10px}
+[data-design="apple"] .side-item{transition:background .2s,color .2s}
+[data-design="apple"] .side-item.active{background:var(--fg);color:var(--bg);font-weight:500}
+[data-design="apple"] .side-item.active .n{color:inherit;opacity:.8}
+[data-design="apple"] .side-item:hover:not(.active){background:var(--bg-2)}
+[data-design="apple"] #q{min-height:44px;transition:box-shadow .2s}
+[data-design="apple"] #q:focus-visible{outline:2px solid #0071e3;outline-offset:3px}
+[data-design="apple"] .card{grid-template-columns:minmax(0,1fr) 180px;gap:14px 24px;padding:26px;transition:transform .25s,box-shadow .25s}
+[data-design="apple"] .card:hover{box-shadow:0 8px 20px #00000008}
+[data-design="apple"] .card .dgm-figs{padding:16px 10px;background:var(--bg);border-radius:14px}
+[data-design="apple"] .card-cta{font-size:11px;line-height:1.5}
+[data-design="apple"] .modal{max-width:1040px;border:0;padding:44px;border-radius:28px;box-shadow:0 28px 90px #0003}
+[data-design="apple"] .modal-head{display:block;margin:0 0 12px;padding-right:44px}
+[data-design="apple"] .modal-title{display:block;font-size:34px;font-weight:600;letter-spacing:-.04em;line-height:1.2}
+[data-design="apple"] .modal-en{display:inline-block;margin-top:9px;font-size:13px}
+[data-design="apple"] .modal-head .tag{display:inline-block;margin-left:12px;padding:5px 10px;border-radius:20px;letter-spacing:0}
+[data-design="apple"] .modal-aliases{font-size:12px;line-height:1.7}
+[data-design="apple"] .modal-plain{font-size:17px;line-height:1.75;max-width:44em;color:var(--fg-dim);margin-top:20px}
+[data-design="apple"] .modal .dgm-figs{gap:18px;margin:28px 0}
+[data-design="apple"] .modal .dgm-fig{margin:0;min-width:0}
+[data-design="apple"] .modal .dgm-box{background:var(--bg-2);border:0;border-radius:20px;padding:24px}
+[data-design="apple"] .modal .dgm{max-height:250px}
+[data-design="apple"] .dgm-cap{font-size:12px;letter-spacing:0;padding:8px 4px 0;line-height:1.7}
+[data-design="apple"] .modal-cols{gap:24px}
+[data-design="apple"] .sec-label{font-size:12px;letter-spacing:0;min-height:40px;margin-bottom:12px}
+[data-design="apple"] .say-box{border:0;background:var(--bg-2);border-radius:18px;padding:22px;font:15px/1.8 var(--sans)}
+[data-design="apple"] .trap-box{border:0;background:var(--bg-2);border-radius:18px;padding:22px;font-size:15px;line-height:1.8;color:var(--fg-dim)}
+[data-design="apple"] .copy-btn{min-height:36px;border:0;border-radius:24px;padding:8px 15px;background:var(--fg);color:var(--bg);font-size:12px;letter-spacing:0}
+[data-design="apple"] .copy-btn.copied{background:var(--fg);color:var(--bg)}
+[data-design="apple"] .trigger-chip-lg,[data-design="apple"] .pair-chip{border-radius:20px;padding:9px 14px;font-size:12px;line-height:1.5}
+[data-design="apple"] .pair-chip{min-height:40px}
+[data-design="apple"] .modal-close{width:36px;height:36px;border:0;border-radius:50%;top:20px;right:20px;background:var(--bg-2)}
+[data-design="apple"] .empty{border-radius:24px;padding:64px 24px;background:var(--bg-2);font:15px/1.8 var(--sans);letter-spacing:0}
+@media(max-width:1200px){[data-design="apple"] .card{grid-template-columns:minmax(0,1fr)}[data-design="apple"] .card .dgm-figs{max-width:none;padding:20px}[data-design="apple"] .card .dgm{max-height:120px}}
+@media(max-width:760px){[data-design="apple"] .modal{padding:28px 22px;border-radius:24px}[data-design="apple"] .modal-title{font-size:28px}[data-design="apple"] .modal-plain{font-size:15px}[data-design="apple"] .modal .dgm-box{padding:16px}[data-design="apple"] .modal .dgm-figs{grid-template-columns:minmax(0,1fr)}[data-design="apple"] .say-box,[data-design="apple"] .trap-box{padding:18px;font-size:14px}[data-design="apple"] .card{padding:22px}}
+
+
+/* Snapshot crossfade keeps rearranging cards from visibly jumping. */
+::view-transition-old(root){animation:design-out 220ms cubic-bezier(.2,.7,.2,1) both}
+::view-transition-new(root){animation:design-in 320ms cubic-bezier(.2,.7,.2,1) both}
+::view-transition-group(root){animation-duration:320ms}
+::view-transition{pointer-events:none}
+@keyframes design-out{from{opacity:1}to{opacity:0}}
+@keyframes design-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root),::view-transition-group(root){animation:none!important}}
+
 </style>
 </head>
 <body>
@@ -566,6 +685,7 @@ ${demoCss}
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
     <input id="q" type="search" placeholder="按你的原话搜，比如「弹窗底下还能滑」「按钮被挡住了」…" autocomplete="off">
   </div>
+  <div class="design-switch" role="group" aria-label="页面设计风格"><button type="button" data-design-choice="apple" aria-pressed="true">Apple</button><button type="button" data-design-choice="classic" aria-pressed="false">经典</button></div>
   <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅色主题" title="切换深浅色主题"></button>
 </nav>
 
@@ -577,6 +697,11 @@ ${demoCss}
     <div class="side-group" id="layer-list"></div>
   </aside>
   <main>
+<section class="apple-intro" id="apple-intro" aria-label="设计表达精选"><div class="apple-heading"><h1>把感觉，说清楚。</h1><p>从一张卡片，到一整页界面。<br>找到你想表达的那个细节。</p></div><div class="feature-gallery" tabindex="0" aria-label="三个精选词条，窄屏可横向滚动">
+<button class="term-feature" data-feature-term="bento-grid"><small>布局与主次</small><h2>大小之间，<br>看见重点。</h2><div class="feature-art" aria-hidden="true"><div class="bento-objects"><i>Aa</i><i>标题</i><i>留白</i></div></div><span class="feature-foot">便当盒布局 <b aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></b></span></button>
+<button class="term-feature feature-palette" data-feature-term="surface-hierarchy"><small>色彩与表面</small><h2>不止黑白。<br>还有层次。</h2><div class="feature-art" aria-hidden="true"><div class="palette-objects"><i>Aa</i><i>明度</i><i>对比</i></div></div><span class="feature-foot">表面明度层级 <b aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></b></span></button>
+<button class="term-feature feature-spatial" data-feature-term="horizontal-gallery"><small>浏览与交互</small><h2>让浏览，<br>自然流动。</h2><div class="feature-art" aria-hidden="true"><div class="glass-objects"><i>01</i><i>02</i><i>03</i></div></div><span class="feature-foot">横向图库 <b aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></b></span></button>
+</div></section>
     <div id="count"></div>
     <div class="grid" id="list"></div>
   </main>
@@ -621,7 +746,7 @@ ${demoJs}
   }
   function paintThemeIcon() { themeBtn.innerHTML = currentIsDark() ? SUN : MOON; }
 
-  var savedTheme = localStorage.getItem(THEME_KEY);
+  var savedTheme; try { savedTheme = localStorage.getItem(THEME_KEY); } catch(e) {}
   if (savedTheme === "light" || savedTheme === "dark") {
     document.documentElement.setAttribute("data-theme", savedTheme);
   }
@@ -631,11 +756,43 @@ ${demoJs}
     themeBtn.classList.add("switching");
     setTimeout(function () {
       document.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem(THEME_KEY, next);
+      try { localStorage.setItem(THEME_KEY, next); } catch(e) {}
       paintThemeIcon();
     }, 190);
     setTimeout(function () { themeBtn.classList.remove("switching"); }, 380);
   });
+
+  var designButtons = document.querySelectorAll('[data-design-choice]');
+  function paintDesign(){designButtons.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.designChoice===document.documentElement.dataset.design));});}
+  var requestedDesign = document.documentElement.dataset.design;
+  var designTransition = null, designFade = null;
+  var reducedDesignMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function applyDesign(){
+    document.documentElement.dataset.design=requestedDesign;
+    try{localStorage.setItem('finesse-term-design',requestedDesign);}catch(e){}
+    paintDesign();
+  }
+  function changeDesign(next){
+    requestedDesign=next;
+    if(designTransition){designTransition.skipTransition();return;}
+    if(document.documentElement.dataset.design===next)return;
+    if(designFade){designFade.cancel();designFade=null;}
+    if(reducedDesignMotion.matches){applyDesign();return;}
+    if(document.startViewTransition){
+      designTransition=document.startViewTransition(applyDesign);
+      designTransition.ready.catch(function(){});
+      designTransition.finished.catch(function(){}).finally(function(){
+        designTransition=null;
+        if(document.documentElement.dataset.design!==requestedDesign)changeDesign(requestedDesign);
+      });
+    }else{
+      applyDesign();
+      if(document.body.animate)designFade=document.body.animate([{opacity:.7},{opacity:1}],{duration:240,easing:'cubic-bezier(.2,.7,.2,1)'});
+    }
+  }
+  designButtons.forEach(function(b){b.addEventListener('click',function(){changeDesign(b.dataset.designChoice);});});
+  reducedDesignMotion.addEventListener('change',function(e){if(e.matches){if(designTransition)designTransition.skipTransition();if(designFade)designFade.cancel();}});
+  paintDesign();
 
   /* ---- 检索算法：term.mjs 的 JS 移植，改动请两边同步 ---- */
 
@@ -796,7 +953,7 @@ ${demoJs}
     var hook = (term.trigger || []).find(function (t) { return hitSet.has(t); }) || (term.trigger || [])[0] || "";
     var delay = "style=\\"transition-delay:" + (Math.min(idx || 0, 26) * 14) + "ms\\"";
     return (
-      '<article class="card" data-id="' + escapeHtml(term.id) + '" ' + delay + '>' +
+      '<article class="card" data-layer="' + escapeHtml(term.layer) + '" data-id="' + escapeHtml(term.id) + '" ' + delay + '>' +
         '<div class="card-head">' +
           '<span class="card-title">' + escapeHtml(term.title) + "</span>" +
           '<span class="card-en">' + escapeHtml(term.en) + "</span>" +
@@ -1032,6 +1189,7 @@ ${demoJs}
   }
 
   function renderList() {
+    document.getElementById("apple-intro").hidden = !!state.q || state.book !== "全部" || state.layer !== "全部";
     var pool = DATA.filter(function (t) {
       if (state.book !== "全部" && t.book !== state.book) return false;
       if (state.layer !== "全部" && t.layer !== state.layer) return false;
@@ -1083,6 +1241,7 @@ ${demoJs}
   }
   window.addEventListener("hashchange", tryOpenFromHash);
 
+  document.querySelectorAll("[data-feature-term]").forEach(function(b){b.addEventListener("click",function(){openModal(b.dataset.featureTerm);});});
   renderAll();
   tryOpenFromHash();
 })();
